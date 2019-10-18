@@ -1,7 +1,7 @@
 import urllib3
 import requests
 from http import HTTPStatus
-from utils import exceptions
+from acaisdk.utils import exceptions
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

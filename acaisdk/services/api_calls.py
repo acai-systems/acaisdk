@@ -1,9 +1,10 @@
-from enum import Enum, auto
-import configs
-from utils import rest_utils
-from utils.utils import *
-from utils.exceptions import *
 from collections import namedtuple
+from enum import Enum, auto
+from acaisdk import configs
+from acaisdk.utils import rest_utils
+from acaisdk.utils.utils import *
+from acaisdk.utils.exceptions import *
+from acaisdk.credentials import get_credentials
 
 E = namedtuple('E', ['id', 'method'])
 
@@ -51,12 +52,20 @@ class Credential(Services):
 
 
 class Storage(Services):
+    # File system
     list_directory = EnumFactory.GET()
+    make_directory = EnumFactory.POST()
     upload_file = EnumFactory.POST()
     download_file = EnumFactory.GET()
-    resolve_file_id = EnumFactory.GET()
+    list_file_versions = EnumFactory.GET()
+
+    # File Set
     create_file_set = EnumFactory.POST()
-    resolve_vague_path = EnumFactory.POST()
+    resolve_file_set = EnumFactory.GET()
+    resolve_vague_path = EnumFactory.GET()
+    download_file_set = EnumFactory.GET()
+    list_file_set_versions = EnumFactory.GET()
+    list_file_sets = EnumFactory.GET()
 
 
 class JobManager(Services):
@@ -73,25 +82,18 @@ class JobManager(Services):
 
 
 class Metadata(Services):
-    # Project init
-    init_project = EnumFactory.POST()
+    get_meta = EnumFactory.POST()
 
     # File metadata
-    init_file_meta = EnumFactory.POST()
     update_file_meta = EnumFactory.POST()
-    get_file_meta = EnumFactory.POST()
     del_file_meta = EnumFactory.POST()
 
     # File set metadata
-    init_file_set_meta = EnumFactory.POST()
     update_file_set_meta = EnumFactory.POST()
-    get_file_set_meta = EnumFactory.POST()
     del_file_set_meta = EnumFactory.POST()
 
     # Job Metadata
-    init_job_meta = EnumFactory.POST()
     update_job_meta = EnumFactory.POST()
-    get_job_meta = EnumFactory.POST()
     del_job_meta = EnumFactory.POST()
 
     # Query
@@ -117,19 +119,25 @@ class RestRequest:
         self.data = data
         return self
 
-    def with_credentials(self, credentials: dict):
-        self.credentials = credentials
+    def with_credentials(self, credentials: dict = None):
+        """A bit dirty, maybe this class should not have visibility
+        to credentials class.
+        """
+        if not credentials:
+            self.credentials = get_credentials()
+        else:
+            self.credentials = credentials
         return self
 
     def run(self):
         endpoint, port = self.service.endpoint
+        debug('Running request:',
+              endpoint,
+              port,
+              self.service.service_name,
+              self.service.name)
         if self.service.method == RestMethods.get:
             self.query.update(self.credentials)
-            debug('Running GET request:',
-                  endpoint,
-                  port,
-                  self.service.service_name,
-                  self.service.name)
             return rest_utils.get(endpoint,
                                   port,
                                   self.service.service_name,
@@ -137,11 +145,6 @@ class RestRequest:
                                   self.query)
         elif self.service.method == RestMethods.post:
             self.data.update(self.credentials)
-            debug('Running POST request:',
-                  endpoint,
-                  port,
-                  self.service.service_name,
-                  self.service.name)
             debug(self.data)
             return rest_utils.post(endpoint,
                                    port,

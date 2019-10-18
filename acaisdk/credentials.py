@@ -1,5 +1,5 @@
 import os
-from utils.exceptions import *
+from acaisdk.utils.exceptions import *
 import configparser
 
 LOCAL_CRED_PATH = os.path.join(os.path.expanduser('~'),
@@ -49,7 +49,8 @@ class Credentials(object):
         return c
 
     def load_from_env(self) -> bool:
-        project = os.environ.get('ACAI_PROJECT', None)
+        # project = os.environ.get('ACAI_PROJECT', None)
+        project = '__dummy_value__'  # TODO: Now we don't need project
         token = os.environ.get('ACAI_TOKEN', None)
         if not project or not token:
             return False
@@ -64,7 +65,8 @@ class Credentials(object):
             raise AcaiException(_msg)
 
         cred_conf = configparser.ConfigParser()
-        self.project_id = cred_conf.get('default', 'project_name')
+        cred_conf.read(LOCAL_CRED_PATH)
+        self.project_id = cred_conf.get('default', 'project')
         self.token = cred_conf.get(self.project_id, 'token')
 
     @staticmethod

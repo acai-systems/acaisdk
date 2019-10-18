@@ -1,7 +1,7 @@
 import os
 from tqdm import tqdm
-from utils.rest_utils import get_session
-from utils import utils
+from acaisdk.utils.rest_utils import get_session
+from acaisdk.utils import utils
 
 
 class FileIO:

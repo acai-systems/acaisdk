@@ -1,8 +1,7 @@
 import json
 import yaml
-from utils.exceptions import *
-from services.api_calls import *
-from credentials import get_credentials
+from acaisdk.utils.exceptions import *
+from acaisdk.services.api_calls import *
 
 
 class Job:
@@ -48,7 +47,7 @@ class Job:
         self._validate()
         r = RestRequest(JobManager.submit_job) \
             .with_data(self.dict) \
-            .with_credentials(get_credentials()) \
+            .with_credentials() \
             .run()
         self.with_attributes(r)
         self.registered = True
@@ -65,7 +64,7 @@ class Job:
     def info(self):
         r = RestRequest(JobManager.job_info) \
             .with_query({'job_id': self.job_id}) \
-            .with_credentials(get_credentials()) \
+            .with_credentials() \
             .run()
         self.with_attributes(r)
 
@@ -81,7 +80,7 @@ class Job:
     def status(self):
         r = RestRequest(JobManager.job_status) \
             .with_query({'job_id': self.job_id}) \
-            .with_credentials(get_credentials()) \
+            .with_credentials(g) \
             .run()
         return r
 
