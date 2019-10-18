@@ -28,7 +28,7 @@ class File:
     @staticmethod
     def upload(local_to_remote: Union[Dict[str, str],
                                       List[Tuple[str, str]]],
-               results: list = None) -> fileset.FilesList:
+               results: list = None):
         """Upload multiple files. Duplicated upload is not dealt with.
 
         :param local_to_remote: {local_path: remote_path, ...}
@@ -37,7 +37,7 @@ class File:
                         interested in the result but want to chain this method
                         with other methods like:
                         >>> File.upload([('/a', '/b')], []).as_new_file_set()
-        :return:
+        :return: fileset.FilesList
         """
         l_r_mapping = local_to_remote
         if type(local_to_remote) == dict:
@@ -49,7 +49,7 @@ class File:
             s3_url, file_id = r['s3_url'], r['id']
             if utils.IS_CLI:
                 print('Uploading file {} to {}'
-                      ''.format(remote_path, local_path))
+                      ''.format(local_path, remote_path))
             FileIO(local_path).upload(s3_url)
             versioned_mapping.append((local_path, file_id))
 
@@ -58,9 +58,12 @@ class File:
         return versioned_mapping
 
     @staticmethod
-    def download(remote_to_local_mapping: Dict[str, str]) -> None:
-        for remote_path, local_path in remote_to_local_mapping.items():
+    def download(remote_to_local: Dict[str, str]) -> None:
+        for remote_path, local_path in remote_to_local.items():
             s3_url = File._get_download_link(remote_path)['s3_url']
+            if os.path.isdir(local_path):
+                local_path = os.path.join(local_path,
+                                          os.path.basename(remote_path))
             if utils.IS_CLI:
                 print('Downloading file {} to {}'
                       ''.format(remote_path, local_path))
@@ -81,9 +84,12 @@ class File:
             .run()
 
     @staticmethod
-    def convert_to_file_mapping(remote_path, local_paths: List[str]):
+    def convert_to_file_mapping(local_paths: List[str], remote_path):
         """The method is not atomic"""
-        l_r_mapping = []
+        if type(local_paths) != list:
+            raise AcaiException('local_paths must be a list!!!')
+
+        l_r_mapping = fileset.FilesList()
         all_ignores = []
 
         if File._is_dir(remote_path):

@@ -1,4 +1,3 @@
-import os
 from acaisdk.services.api_calls import *
 from typing import Iterable
 from acaisdk import file
@@ -8,6 +7,9 @@ class FilesList(list):
     def as_new_file_set(self, file_set_name):
         return FileSet.create_file_set(file_set_name,
                                        [_[1] for _ in self])
+
+    def upload(self):
+        return file.File.upload(self)
 
 
 class FileSet:
