@@ -19,7 +19,7 @@ class File:
                       }
                     ]
         """
-        r = RestRequest(Storage.list_directory) \
+        r = RestRequest(StorageApi.list_directory) \
             .with_query({'directory_path': directory}) \
             .with_credentials() \
             .run()
@@ -71,14 +71,14 @@ class File:
 
     @staticmethod
     def _get_upload_link(remote_path):
-        return RestRequest(Storage.upload_file) \
+        return RestRequest(StorageApi.upload_file) \
             .with_data({'path': remote_path}) \
             .with_credentials() \
             .run()
 
     @staticmethod
     def _get_download_link(remote_path):
-        return RestRequest(Storage.download_file) \
+        return RestRequest(StorageApi.download_file) \
             .with_query({'path': remote_path}) \
             .with_credentials() \
             .run()
@@ -146,3 +146,30 @@ class File:
             else:
                 inaccessible.append(f)
         return to_upload, inaccessible
+
+    @staticmethod
+    def list_file_versions(file_name):
+        params = {'path': file_name}
+        return RestRequest(StorageApi.list_file_versions) \
+            .with_query(params) \
+            .with_credentials() \
+            .run()
+
+    @staticmethod
+    def resolve_vague_path(vague_path):
+        params = {'vague_path': vague_path}
+        return RestRequest(StorageApi.resolve_vague_path) \
+            .with_query(params) \
+            .with_credentials() \
+            .run()
+
+    # @staticmethod
+    # def tag(remote_path, kv_pairs=None, **kwargs):
+    #     all_kv_pairs = {}
+    #     if kv_pairs:
+    #         all_kv_pairs.update(kv_pairs)
+    #     for k, v in kwargs.items():
+    #         kv_pairs[k] = v
+
+
+

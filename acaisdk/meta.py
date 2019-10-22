@@ -1,6 +1,7 @@
 from acaisdk.services.api_calls import *
 from typing import Iterable, List
 from acaisdk import fileset
+from acaisdk import file
 
 
 class ConditionType(Enum):
@@ -54,6 +55,95 @@ class Condition:
 
 
 class Meta:
+    # === UPDATE ===
+    @staticmethod
+    def update_file_meta(file_path,
+                         tags: list = None,
+                         kv_pairs: dict = None,
+                         **kwargs):
+        # Resolve the potentially vague path to explicit path
+        r = file.File.resolve_vague_path(file_path)
+
+        if r['is_dir']:
+            raise AcaiException('Remote path {} is a directory.'
+                                'Directories do not have metadata'
+                                ''.format(r['id']))
+        explicit_path = r['id']
+        all_kv_pairs = Meta._merge_dict(kv_pairs, kwargs)
+        data = {'id': explicit_path,
+                'meta': all_kv_pairs}
+        if tags:
+            data['tags'] = tags
+
+        return RestRequest(MetadataApi.update_file_meta) \
+            .with_data(data) \
+            .with_credentials() \
+            .run()
+
+    @staticmethod
+    def update_file_set_meta(file_set,
+                             tags: list = None,
+                             kv_pairs: dict = None,
+                             **kwargs):
+        # Resolve the potentially vague name to explicit name
+        r = fileset.FileSet.resolve_vague_name(file_set)
+
+        explicit_name = r['id']
+        all_kv_pairs = Meta._merge_dict(kv_pairs, kwargs)
+        data = {'id': explicit_name,
+                'meta': all_kv_pairs}
+        if tags:
+            data['tags'] = tags
+
+        return RestRequest(MetadataApi.update_file_set_meta) \
+            .with_data(data) \
+            .with_credentials() \
+            .run()
+
+    @staticmethod
+    def _merge_dict(dict_a, dict_b):
+        merged = {}
+        if dict_a:
+            merged.update(dict_a)
+        if dict_b:
+            merged.update(dict_b)
+        return merged
+
+    # === DELETE ===
+    @staticmethod
+    def del_file_meta(file_path, keys: list, tags: list):
+        # Resolve the potentially vague path to explicit path
+        r = file.File.resolve_vague_path(file_path)
+
+        if r['is_dir']:
+            raise AcaiException('Remote path {} is a directory.'
+                                'Directories do not have metadata'
+                                ''.format(r['id']))
+        explicit_path = r['id']
+        data = {'id': explicit_path,
+                'keys': keys,
+                'tags': tags}
+        return RestRequest(MetadataApi.del_file_meta) \
+            .with_data(data) \
+            .with_credentials() \
+            .run()
+
+    @staticmethod
+    def del_file_set_meta(file_set, keys: list, tags: list):
+        # Resolve the potentially vague name to explicit name
+        r = fileset.FileSet.resolve_vague_name(file_set)
+
+        explicit_path = r['id']
+        data = {'id': explicit_path,
+                'keys': keys,
+                'tags': tags}
+
+        return RestRequest(MetadataApi.del_file_set_meta) \
+            .with_data(data) \
+            .with_credentials() \
+            .run()
+
+    # === SEARCHING ===
     @staticmethod
     def find_file(*conditions: Condition):
         return Meta.query_meta('file', *conditions)
@@ -75,7 +165,7 @@ class Meta:
             "entity_type": entity_type.lower(),
             "conditions": [c.to_dict() for c in conditions]
         }
-        return RestRequest(Metadata.query_meta) \
+        return RestRequest(MetadataApi.query_meta) \
             .with_data(data) \
             .with_credentials() \
             .run()
@@ -87,16 +177,15 @@ class Meta:
         # Resolve vague paths
         resolved_paths = []
         for f in file_list:
-            r = fileset.FileSet.resolve_vague_path(f)
+            r = file.File.resolve_vague_path(f)
             if not r['is_dir']:
-                resolved_paths.append(r["version_specific_path"])
-
+                resolved_paths.append(r['id'])
         # Get meta data
         data = {
             'type': 'file',
             'ids': resolved_paths
         }
-        return RestRequest(Metadata.get_meta) \
+        return RestRequest(MetadataApi.get_meta) \
             .with_data(data) \
             .with_credentials() \
             .run()

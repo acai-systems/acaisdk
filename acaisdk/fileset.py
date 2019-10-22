@@ -1,5 +1,5 @@
 from acaisdk.services.api_calls import *
-from typing import Iterable
+from typing import Iterable, List
 from acaisdk import file
 
 
@@ -28,26 +28,22 @@ class FileSet:
             "name": file_set_name,
             "files": list(remote_file_list)
         }
-        return RestRequest(Storage.create_file_set) \
+        return RestRequest(StorageApi.create_file_set) \
             .with_data(data) \
             .with_credentials() \
             .run()
 
     @staticmethod
-    def resolve_file_set(vague_name):
+    def list_file_set_content(vague_name) -> dict:
         params = {'vague_name': vague_name}
-        return RestRequest(Storage.resolve_file_set) \
+        return RestRequest(StorageApi.resolve_file_set) \
             .with_query(params) \
             .with_credentials() \
             .run()
 
     @staticmethod
-    def resolve_vague_path(vague_path):
-        params = {'vague_path': vague_path}
-        return RestRequest(Storage.resolve_vague_path) \
-            .with_query(params) \
-            .with_credentials() \
-            .run()
+    def resolve_vague_name(vague_name):
+        return file.File.resolve_vague_path(vague_name)
 
     @staticmethod
     def download_file_set(vague_name: str,
@@ -61,7 +57,7 @@ class FileSet:
 
         # Get file set content
         params = {'vague_name': vague_name}
-        r = RestRequest(Storage.download_file_set) \
+        r = RestRequest(StorageApi.download_file_set) \
             .with_query(params) \
             .with_credentials() \
             .run()
@@ -95,13 +91,13 @@ class FileSet:
     @staticmethod
     def list_file_set_versions(file_set_name):
         params = {'name': file_set_name}
-        return RestRequest(Storage.list_file_set_versions) \
+        return RestRequest(StorageApi.list_file_set_versions) \
             .with_query(params) \
             .with_credentials() \
             .run()
 
     @staticmethod
-    def list_file_sets():
-        return RestRequest(Storage.list_file_sets) \
+    def list_file_sets() -> List[str]:
+        return RestRequest(StorageApi.list_file_sets) \
             .with_credentials() \
             .run()

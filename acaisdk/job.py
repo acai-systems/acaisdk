@@ -6,51 +6,58 @@ from acaisdk.services.api_calls import *
 
 class Job:
     __slots__ = [
-        'job_id',
-        'project_id',
-        'user_id',
-        'input_fileset_id',
+        'id',
+        'name',
+        'input_file_set',
         'output_path',
+        'output_file_set',
         'code',
         'command',
         'container_image',
-        'name',
         'description',
-        'time_submitted',
-        'resource',
+        'submitted_time',
+        'updated_time',
+        'v_cpu',
+        'gpu',
+        'memory',
         'registered',
-        'submitted']
+        'submitted',
+    ]
     required_fields = [
-        'project_id',
-        'user_id',
-        'input_fileset_id',
+        'name',
+        'input_file_set',
         'output_path',
         'code',
         'command',
         'container_image',
-        'name',
         'description',
-        'resource']
+        'v_cpu',
+        'gpu',
+        'memory', ]
     blacklist_fields = [
+        'id',
+        'output_file_set',
+        'updated_time',
         'registered',
         'submitted'
     ]
 
     def __init__(self):
-        self.resource = {}
         self.registered = False
         self.submitted = False
+        self.v_cpu, self.gpu, self.memory = '0.1', '32Mi', '0'
 
     def register(self):
         if self.registered:
             raise AcaiException('Job already registered')
         self._validate()
-        r = RestRequest(JobManager.submit_job) \
+        r = RestRequest(JobRegistryApi.new_job) \
             .with_data(self.dict) \
             .with_credentials() \
             .run()
         self.with_attributes(r)
         self.registered = True
+        debug(r)
         return self
 
     def run(self):
@@ -58,12 +65,17 @@ class Job:
             raise AcaiException('Job not registered')
         if self.submitted:
             raise AcaiException('Job already submitted')
-        # TODO
+        r = RestRequest(JobSchedulerApi.new_job) \
+            .with_query({'job_id': self.id}) \
+            .with_credentials() \
+            .run()
         self.submitted = True
+        debug(r)
+        return r
 
     def info(self):
-        r = RestRequest(JobManager.job_info) \
-            .with_query({'job_id': self.job_id}) \
+        r = RestRequest(JobRegistryApi.job_info) \
+            .with_query({'id': self.id}) \
             .with_credentials() \
             .run()
         self.with_attributes(r)
@@ -78,9 +90,9 @@ class Job:
         pass  # not open for CLI
 
     def status(self):
-        r = RestRequest(JobManager.job_status) \
-            .with_query({'job_id': self.job_id}) \
-            .with_credentials(g) \
+        r = RestRequest(JobRegistryApi.job_status) \
+            .with_query({'job_id': self.id}) \
+            .with_credentials() \
             .run()
         return r
 
@@ -93,7 +105,7 @@ class Job:
             raise ArgError(_msg)
 
     def with_attributes(self, d: dict):
-        [setattr(self, k, v) for k, v in d.items()]
+        [setattr(self, k, v) for k, v in d.items() if k in self.__slots__]
         return self
 
     def with_resource(self, vcpu=None, gpu=None, mem=None):
@@ -108,15 +120,13 @@ class Job:
             _msg = 'Wrong type of argument for resource {}: {}'.format(name, v)
             raise ArgError(_msg)
 
-        result = {}
         if vcpu:
-            result['vcpu'] = _to_string(vcpu, 'vcpu')
+            self.v_cpu = _to_string(vcpu, 'vcpu')
         if gpu:
-            result['gpu'] = _to_string(gpu, 'gpu')
+            self.gpu = _to_string(gpu, 'gpu')
         if mem:
-            result['mem'] = _to_string(mem, 'mem')
+            self.memory = _to_string(mem, 'mem')
 
-        self.resource.update(result)
         return self
 
     @property

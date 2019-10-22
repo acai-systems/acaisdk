@@ -5,6 +5,7 @@ from acaisdk.utils import rest_utils
 from acaisdk.utils.utils import *
 from acaisdk.utils.exceptions import *
 from acaisdk.credentials import get_credentials
+import json
 
 E = namedtuple('E', ['id', 'method'])
 
@@ -27,11 +28,12 @@ class EnumFactory(Enum):
 class Services(Enum):
     @property
     def service_name(self):
-        return {Credential: 'credential',
-                Storage: 'storage',
-                Metadata: 'meta',
-                JobManager: 'job_manager',
-                Provenance: 'provenance'}[type(self)]
+        return {CredentialApi: 'credential',
+                StorageApi: 'storage',
+                MetadataApi: 'meta',
+                JobRegistryApi: 'job_registry',
+                JobSchedulerApi: 'job_scheduler',
+                ProvenanceApi: 'provenance'}[type(self)]
 
     @property
     def endpoint(self):
@@ -44,14 +46,14 @@ class Services(Enum):
         return self.value.method
 
 
-class Credential(Services):
+class CredentialApi(Services):
     create_project = EnumFactory.POST()
     create_user = EnumFactory.POST()
     resolve_user_id = EnumFactory.GET()
     resolve_project_id = EnumFactory.GET()
 
 
-class Storage(Services):
+class StorageApi(Services):
     # File system
     list_directory = EnumFactory.GET()
     make_directory = EnumFactory.POST()
@@ -68,20 +70,15 @@ class Storage(Services):
     list_file_sets = EnumFactory.GET()
 
 
-class JobManager(Services):
-    submit_job = EnumFactory.POST()
-    job_info = EnumFactory.GET()
-    list_jobs = EnumFactory.GET()
-    new_job = EnumFactory.GET()
-    kill_job = EnumFactory.GET()
-    update_job_status = EnumFactory.POST()
-    job_status = EnumFactory.GET()
-    submit_profiling_job = EnumFactory.POST()
-    estimate = EnumFactory.GET()
-    autoprovision = EnumFactory.POST()
+class JobRegistryApi(Services):
+    new_job = EnumFactory.POST()
 
 
-class Metadata(Services):
+class JobSchedulerApi(Services):
+    new_job = EnumFactory.POST()
+
+
+class MetadataApi(Services):
     get_meta = EnumFactory.POST()
 
     # File metadata
@@ -100,7 +97,7 @@ class Metadata(Services):
     query_meta = EnumFactory.POST()
 
 
-class Provenance(Services):
+class ProvenanceApi(Services):
     register = EnumFactory.POST()
 
 
@@ -145,7 +142,7 @@ class RestRequest:
                                   self.query)
         elif self.service.method == RestMethods.post:
             self.data.update(self.credentials)
-            debug(self.data)
+            debug('POST data', json.dumps(self.data))
             return rest_utils.post(endpoint,
                                    port,
                                    self.service.service_name,

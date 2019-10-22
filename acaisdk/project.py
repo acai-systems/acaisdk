@@ -6,7 +6,7 @@ class Project:
     def create_project(project_id: str,
                        admin_token: str,
                        project_admin: str):
-        return RestRequest(Credential.create_project) \
+        return RestRequest(CredentialApi.create_project) \
             .with_data({'project_id': project_id,
                         'admin_token': admin_token,
                         "project_admin_name": project_admin}) \
@@ -17,7 +17,7 @@ class Project:
                     admin_token: str,
                     user: str):
         # Admin could be global or project admin
-        return RestRequest(Credential.create_user) \
+        return RestRequest(CredentialApi.create_user) \
             .with_data({'project_id': project_id,
                         'admin_token': admin_token,
                         "user_name": user}) \
