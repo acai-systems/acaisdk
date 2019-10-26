@@ -37,7 +37,7 @@ class File:
     @staticmethod
     def upload(local_to_remote: Union[Dict[str, str],
                                       List[Tuple[str, str]]],
-               results: list = None) -> fileset.FilesList:
+               results: list = None):
         """Upload multiple files.
 
         Notice that the method does not deal with conflicting updates. It is
