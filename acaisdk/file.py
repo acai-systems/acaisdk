@@ -37,7 +37,7 @@ class File:
     @staticmethod
     def upload(local_to_remote: Union[Dict[str, str],
                                       List[Tuple[str, str]]],
-               results: list = None):
+               results: list = None) -> 'fileset.FilesList':
         """Upload multiple files.
 
         Notice that the method does not deal with conflicting updates. It is
@@ -124,7 +124,7 @@ class File:
 
     @staticmethod
     def convert_to_file_mapping(local_paths: List[str],
-                                remote_path) -> Tuple[fileset.FilesList,
+                                remote_path) -> Tuple['fileset.FilesList',
                                                       List[str]]:
         """A nice method to make you happy.
 
