@@ -1,5 +1,0 @@
-requests==2.18.4
-urllib3==1.22
-tqdm==4.31.1
-typing==3.7.4.1
-PyYAML==5.1.2
