@@ -9,15 +9,24 @@ import glob
 
 class File:
     @staticmethod
-    def list_dir(directory: str):
-        """
-        :return:    [
-                      {
-                        "name": "train.json",
-                        "version": 1,
-                        "is_dir": false
-                      }
-                    ]
+    def list_dir(directory: str) -> List[Dict]:
+        """List all files and directories in a remote directory.
+
+        "version" denotes the latest version of a file.
+        Notice that version number for directories makes no sense.
+
+        :return:
+
+            .. code-block::
+
+                [
+                    {
+                    "path": "train.json",
+                    "version": 1,
+                    "is_dir": false
+                    },
+                    ...
+                ]
         """
         r = RestRequest(StorageApi.list_directory) \
             .with_query({'directory_path': directory}) \
@@ -28,16 +37,32 @@ class File:
     @staticmethod
     def upload(local_to_remote: Union[Dict[str, str],
                                       List[Tuple[str, str]]],
-               results: list = None):
-        """Upload multiple files. Duplicated upload is not dealt with.
+               results: list = None) -> fileset.FilesList:
+        """Upload multiple files.
 
-        :param local_to_remote: {local_path: remote_path, ...}
-                                or [(local_path, remote_path), ...]
+        Notice that the method does not deal with conflicting updates. It is
+        up to the user to make sure there is no unintended uploads to the same
+        remote location. Otherwise, multiple versions of the same file path
+        will be created. (i.e. you won't lose any data)
+
+        :param local_to_remote: Allows dictionary or list of tuples. E.g.
+
+                :code:`{local_path: remote_path, ...}` or
+                :code:`[(local_path, remote_path), ...]`
+
         :param results: Store result to another FilesList, for when you are
                         interested in the result but want to chain this method
                         with other methods like:
+
                         >>> File.upload([('/a', '/b')], []).as_new_file_set()
-        :return: fileset.FilesList
+
+        :return:
+            FilesList object. It's just a python list with additional
+            functions for file and file set operations.
+
+            .. code-block::
+
+                [("local_path", "remote_path:version"), ...]
         """
         l_r_mapping = local_to_remote
         if type(local_to_remote) == dict:
@@ -59,6 +84,20 @@ class File:
 
     @staticmethod
     def download(remote_to_local: Dict[str, str]) -> None:
+        """ Download multiple remote files to local.
+
+        If version is not specified for remote file, then the latest version
+        will be downloaded by default.
+
+        Local path can be a directory, e.g. For a input dict
+        :code:`{"/my_acai/b/c.json": "/home/ubuntu/stuff/"}`, `c.json` will be
+        downloaded to `/home/ubuntu/stuff/c.json`
+
+        :param remote_to_local:
+            :code:`{"remote_path:version": "local_path", ...}`
+
+        :return: None
+        """
         for remote_path, local_path in remote_to_local.items():
             s3_url = File._get_download_link(remote_path)['s3_url']
             if os.path.isdir(local_path):
@@ -84,8 +123,57 @@ class File:
             .run()
 
     @staticmethod
-    def convert_to_file_mapping(local_paths: List[str], remote_path):
-        """The method is not atomic"""
+    def convert_to_file_mapping(local_paths: List[str],
+                                remote_path) -> Tuple[fileset.FilesList,
+                                                      List[str]]:
+        """A nice method to make you happy.
+
+        Converts local file and directory paths to their
+        corresponding remote paths. So that you do not need to specify
+        local to remote path mappings one by one for the `upload` function.
+
+        For a local file system like
+
+        .. code-block:: text
+
+            /a/b/c/1.txt
+            /a/b/c/d/2.txt
+            /a/b/3.txt
+
+        Running
+
+        .. code-block::
+
+            convert_to_file_mapping(['/a/b/3.txt', '/a/b/c/'], '/allen/')
+
+        will result in a remote file system structure like:
+
+        .. code-block:: text
+
+            /allen/1.txt
+            /allen/d/2.txt
+            /allen/3.txt
+
+        Notice that if you are writing to a remote directory, a `"/"` must be
+        added at the end of the path string, like `"/allen/"` instead of
+        `"/allen"`.
+
+        Example usage:
+
+        .. code-block:: python
+
+            File.convert_to_file_mapping(['/a/b/c/'], '/allen/')[0] \\
+                .upload() \\
+                .as_new_file_set('my_training_files')
+
+        Notice that the method is not transactional. It does not protect
+        itself from change of files in local directories.
+
+        :return:
+            * A FileList for successfully mapped paths.
+
+            * A list of files that are not accessible.
+        """
         if type(local_paths) != list:
             raise AcaiException('local_paths must be a list!!!')
 
@@ -170,6 +258,3 @@ class File:
     #         all_kv_pairs.update(kv_pairs)
     #     for k, v in kwargs.items():
     #         kv_pairs[k] = v
-
-
-

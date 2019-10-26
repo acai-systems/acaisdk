@@ -1,10 +1,89 @@
 import json
 import yaml
 from acaisdk.utils.exceptions import *
+from collections import OrderedDict
 from acaisdk.services.api_calls import *
+from typing import Union, Tuple
 
 
 class Job:
+    """Run a job on the cloud.
+
+    Typical usage:
+
+    .. code-block:: python
+
+        attr = {
+            "v_cpu": "0.5",
+            "memory": "320Mi",
+            "gpu": "0",
+            "command": "echo hello world from default job",
+            "container_image": "pytorch",
+            'input_file_set': 'sterling',
+            'output_path': 'outputlalapath',
+            'code': '/albertinputs/demo.zip',
+            'description': 'nothinghere',
+            'name': 'rubbish2'
+        }
+
+        Job().with_attributes(attr).register().run()
+
+
+    :ivar id:
+        (int) Job id. Not needed for job registration since it does not exist
+        at that point (obviously).
+
+    :ivar name: Job name
+
+    :ivar input_file_set:
+        This input set will be downloaded to the container where the job is
+        executed. If no version given, latest file set is chosen.
+
+    :ivar output_path:
+        Only files written to this output folder in the container will be
+        uploaded and packed into a new file set. Can be a relative path
+        (relative to `/acai/` directory).
+
+    :ivar output_file_set:
+        Output file set name. Not need for job submission since the name is
+        decided by the backend.
+
+    :ivar code:
+        Remote location of the code zip.
+
+    :ivar command:
+        The command in which the code is executed. As this is a shell command,
+        the execution is carried out by the default shell in the container.
+        One benefit is that you can make full use of shell grammars like
+        :code:`&&`, :code:`;` and :code:`|`, etc.
+
+    :ivar container_image:
+        ID for the docker image so that ACAI can pull the image down to the
+        execution host.
+
+    :ivar description:
+        Some description for the job. Just like :code:`git commit -m`
+
+    :ivar submitted_time:
+        Unix timestamp of the submission time. Not needed for submission.
+
+    :ivar updated_time:
+        Deprecated.
+
+    :ivar v_cpu:
+        (str) Number of virtual CPUs the execution container can have.
+        See doc for `with_resources()` for recommended usage.
+
+    :ivar memory:
+        (str) The amount of physical memory for the container.
+        Notice that exceeding the limit will result in job failure.
+        See doc for `with_resources()` for recommended usage.
+
+    :ivar gpu:
+        (str) Number of GPUs to allocate to the container. See doc for
+        `with_resources()` for recommended usage.
+
+    """
     __slots__ = [
         'id',
         'name',
@@ -23,7 +102,7 @@ class Job:
         'registered',
         'submitted',
     ]
-    required_fields = [
+    _required_fields = [
         'name',
         'input_file_set',
         'output_path',
@@ -34,7 +113,7 @@ class Job:
         'v_cpu',
         'gpu',
         'memory', ]
-    blacklist_fields = [
+    _blacklist_fields = [
         'id',
         'output_file_set',
         'updated_time',
@@ -45,9 +124,11 @@ class Job:
     def __init__(self):
         self.registered = False
         self.submitted = False
-        self.v_cpu, self.gpu, self.memory = '0.1', '32Mi', '0'
+        self.v_cpu, self.gpu, self.memory = '0.5', '512Mi', '0'
 
     def register(self):
+        """Register the job with ACAI backend. Only registered job can be run.
+        """
         if self.registered:
             raise AcaiException('Job already registered')
         self._validate()
@@ -61,12 +142,13 @@ class Job:
         return self
 
     def run(self):
+        """Execute registered job."""
         if not self.registered:
             raise AcaiException('Job not registered')
         if self.submitted:
             raise AcaiException('Job already submitted')
         r = RestRequest(JobSchedulerApi.new_job) \
-            .with_query({'job_id': self.id}) \
+            .with_data({'job_id': self.id}) \
             .with_credentials() \
             .run()
         self.submitted = True
@@ -75,14 +157,14 @@ class Job:
 
     def info(self):
         r = RestRequest(JobRegistryApi.job_info) \
-            .with_query({'id': self.id}) \
+            .with_query({'job_id': self.id}) \
             .with_credentials() \
             .run()
         self.with_attributes(r)
 
     @staticmethod
     def list_jobs():
-        """User id is read implicitly"""
+        # """User id is read implicitly"""
         pass
 
     # ==== Monitor ===
@@ -97,7 +179,7 @@ class Job:
         return r
 
     def _validate(self):
-        fields_not_set = [f for f in self.required_fields
+        fields_not_set = [f for f in self._required_fields
                           if not hasattr(self, f)]
         if fields_not_set:
             _msg = 'Fields not set when submitting job: ' \
@@ -105,10 +187,33 @@ class Job:
             raise ArgError(_msg)
 
     def with_attributes(self, d: dict):
+        """Fill job object with attributes.
+
+        :param d: Dict of attributes to add to the job object.
+        :return: Updated job object.
+        """
         [setattr(self, k, v) for k, v in d.items() if k in self.__slots__]
         return self
 
-    def with_resource(self, vcpu=None, gpu=None, mem=None):
+    def with_resources(self,
+                       vcpu: Union[int, str] = None,
+                       gpu: Union[int, str] = None,
+                       mem: Union[int, str] = None):
+        """A more friendly method for adding resource constraints.
+
+        Each of the three parameters can be str or int.
+
+        For example,
+
+        :code:`mem=1e9` means max mem usage of 1e9 bytes (~1GB)
+
+        :code:`mem="100Mi"` means max mem usage of 100MB
+
+        Memory string format is the same as here:
+        https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/#meaning-of-memory
+
+        """
+        # TODO: autoprovision
         def _to_string(v, name):
             if type(v) == int:
                 return '{}'.format(v)
@@ -130,21 +235,32 @@ class Job:
         return self
 
     @property
-    def dict(self):
-        return {s: getattr(self, s) for s in self.__slots__
-                if hasattr(self, s) and s not in self.blacklist_fields}
+    def dict(self) -> OrderedDict:
+        r = OrderedDict()
+        [r.update({s: getattr(self, s)}) for s in self.__slots__
+         if hasattr(self, s) and s not in self._blacklist_fields]
+        return r
 
     @staticmethod
     def from_dict(d: dict):
+        """Wrapper for :code:`with_attributes()` method.
+        Has the exact same behavior.
+        """
         return Job().with_attributes(d)
 
     @staticmethod
     def from_json(path):
+        """Wrapper for :code:`with_attributes()` method. For when you want to
+        load the job settings from a JSON file.
+        """
         with open(path, 'r') as f:
             return Job.from_dict(json.load(f))
 
     @staticmethod
     def from_yaml(path):
+        """Wrapper for :code:`with_attributes()` method. For when you want to
+        load the job settings from a YAML file.
+        """
         with open(path, 'r') as f:
             return Job.from_dict(yaml.load(f))
 

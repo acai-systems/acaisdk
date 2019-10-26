@@ -5,10 +5,18 @@ from acaisdk import file
 
 class FilesList(list):
     def as_new_file_set(self, file_set_name):
+        """Create a file set for a newly uploaded batch.
+
+        Usage can be found at `File.upload` and `File.convert_to_file_mapping`
+        """
         return FileSet.create_file_set(file_set_name,
                                        [_[1] for _ in self])
 
     def upload(self):
+        """Upload a FilesList to data lake.
+
+        Usage can be found at `File.convert_to_file_mapping`
+        """
         return file.File.upload(self)
 
 
@@ -16,13 +24,7 @@ class FileSet:
     @staticmethod
     def create_file_set(file_set_name: str,
                         remote_file_list: Iterable):
-        """
-        :return:    {
-                      "id": "HotpotQA:1",
-                      "files": [
-                        "data/train.json:2"
-                      ]
-                    }
+        """Create a file set on a list of remote files.
         """
         data = {
             "name": file_set_name,
@@ -35,6 +37,7 @@ class FileSet:
 
     @staticmethod
     def list_file_set_content(vague_name) -> dict:
+        """List all files in a file set."""
         params = {'vague_name': vague_name}
         return RestRequest(StorageApi.resolve_file_set) \
             .with_query(params) \
@@ -49,6 +52,44 @@ class FileSet:
     def download_file_set(vague_name: str,
                           mount_point: str = None,
                           force: bool = False) -> None:
+        """Download a file set to local device.
+
+        :param vague_name:
+            File set name can be vague (with or without version number). Latest
+            version of the file set will be chosen if no version given.
+
+        :param mount_point:
+            Which local directory to download the file set to. This won't
+            actually "mount" any device on your local file system. But the
+            behavior will be similar to mounting the root directory in the
+            remote file system to the "mount_point" directory.
+
+            e.g. For a file set `allen:2` with file
+
+            .. code-block:: text
+
+                /allen/1.txt:1
+                /allen/d/2.txt:1
+                /allen/3.txt:3
+
+            calling :code:`download_file_set('allen:2', '/local_tmp/')`
+
+            results in a local directory as:
+
+            .. code-block:: text
+
+                /local_tmp/allen/1.txt
+                /local_tmp/allen/d/2.txt
+                /local_tmp/allen/3.txt
+
+            Notice that the SDK won't create the mount_point directory for you,
+            but it will create folders inside the mount_point automatically.
+
+        :param force:
+            If local directory has conflicting file names, choose if
+            continue to download.
+
+        """
         if not mount_point:
             # Use current directory
             mount_point = os.getcwd()
@@ -98,6 +139,7 @@ class FileSet:
 
     @staticmethod
     def list_file_sets() -> List[str]:
+        """Show all file sets under the project."""
         return RestRequest(StorageApi.list_file_sets) \
             .with_credentials() \
             .run()

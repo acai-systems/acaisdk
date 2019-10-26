@@ -1,0 +1,777 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ACAI SDK &mdash; acaisdk 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Welcome to acaisdk’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> acaisdk
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">ACAI SDK</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-acaisdk.credentials">Credentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-acaisdk.file">File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-acaisdk.fileset">File Set</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-acaisdk.job">Job</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-acaisdk.meta">Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-acaisdk.project">Project</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">acaisdk</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>ACAI SDK</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/acaisdk.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="acai-sdk">
+<h1>ACAI SDK<a class="headerlink" href="#acai-sdk" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-acaisdk.credentials">
+<span id="credentials"></span><h2>Credentials<a class="headerlink" href="#module-acaisdk.credentials" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="acaisdk.credentials.Credentials">
+<em class="property">class </em><code class="sig-prename descclassname">acaisdk.credentials.</code><code class="sig-name descname">Credentials</code><a class="headerlink" href="#acaisdk.credentials.Credentials" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Almost all interactions between user and the ACAI backend requires a token
+to identify the user.</p>
+<p>Credentials include a project name (or id, they are the same in ACAI) and
+a token. They are stored inside a configuration file (just like AWS CLI)
+or as environment variables (again, like AWS CLI).</p>
+<p>The easiest way to work with credentials is to store them inside env
+variables, so that you never need to explicitly call any methods in this
+class. All API calls will automatically use methods under this class to
+authenticate with the backend. You just need to do:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;ACAI_PROJECT&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;MyAwesomeProject&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;ACAI_TOKEN&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;***************D8S6&#39;</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="acaisdk.credentials.Credentials.load">
+<em class="property">static </em><code class="sig-name descname">load</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.credentials.Credentials.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load credentials from ENV or from <cite>~/.acai/credentials</cite>.</p>
+<ul class="simple">
+<li><p>Credentials from ENV has higher priority than from file.</p></li>
+<li><p>It is required that both project name and token are valid,
+API calls will fail if one of the two fields is empty.</p></li>
+</ul>
+<p>Usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Credentials</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Or (preferably):
+Just don’t call this method. It will be called automatically.</p>
+<p>All later API calls will be implicitly using this set of credentials.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Credentials object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="acaisdk.credentials.Credentials.configure">
+<em class="property">static </em><code class="sig-name descname">configure</code><span class="sig-paren">(</span><em class="sig-param">project_name</em>, <em class="sig-param">token</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#acaisdk.credentials.Credentials.configure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configure a new project in local credentials file</p>
+<p>Notice that ENV variable still has higher priority even if you use this
+method to store a new set of credentials to file.</p>
+<p>Usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Credentials</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s1">&#39;my_project&#39;</span><span class="p">,</span> <span class="s1">&#39;****PROJECT_TOKEN****&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Credentials</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>  <span class="c1"># or implicitly load</span>
+</pre></div>
+</div>
+<p>Config file is formatted as:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[default]
+project_name = test_project
+
+[test_project]
+token = ************SD43
+
+[dummy_project]
+token = ************3452
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Credentials object</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-acaisdk.file">
+<span id="file"></span><h2>File<a class="headerlink" href="#module-acaisdk.file" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="acaisdk.file.File">
+<em class="property">class </em><code class="sig-prename descclassname">acaisdk.file.</code><code class="sig-name descname">File</code><a class="headerlink" href="#acaisdk.file.File" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="acaisdk.file.File.list_dir">
+<em class="property">static </em><code class="sig-name descname">list_dir</code><span class="sig-paren">(</span><em class="sig-param">directory: str</em><span class="sig-paren">)</span> &#x2192; List[Dict]<a class="headerlink" href="#acaisdk.file.File.list_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>List all files and directories in a remote directory.</p>
+<p>“version” denotes the latest version of a file.
+Notice that version number for directories makes no sense.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+    <span class="p">{</span>
+    <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;train.json&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;is_dir&quot;</span><span class="p">:</span> <span class="n">false</span>
+    <span class="p">},</span>
+    <span class="o">...</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="acaisdk.file.File.upload">
+<em class="property">static </em><code class="sig-name descname">upload</code><span class="sig-paren">(</span><em class="sig-param">local_to_remote: Union[Dict[str, str], List[Tuple[str, str]]], results: list = None</em><span class="sig-paren">)</span> &#x2192; acaisdk.fileset.FilesList<a class="headerlink" href="#acaisdk.file.File.upload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upload multiple files.</p>
+<p>Notice that the method does not deal with conflicting updates. It is
+up to the user to make sure there is no unintended uploads to the same
+remote location. Otherwise, multiple versions of the same file path
+will be created. (i.e. you won’t lose any data)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>local_to_remote</strong> – <p>Allows dictionary or list of tuples. E.g.</p>
+<p><code class="code docutils literal notranslate"><span class="pre">{local_path:</span> <span class="pre">remote_path,</span> <span class="pre">...}</span></code> or
+<code class="code docutils literal notranslate"><span class="pre">[(local_path,</span> <span class="pre">remote_path),</span> <span class="pre">...]</span></code></p>
+</p></li>
+<li><p><strong>results</strong> – <p>Store result to another FilesList, for when you are
+interested in the result but want to chain this method
+with other methods like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">File</span><span class="o">.</span><span class="n">upload</span><span class="p">([(</span><span class="s1">&#39;/a&#39;</span><span class="p">,</span> <span class="s1">&#39;/b&#39;</span><span class="p">)],</span> <span class="p">[])</span><span class="o">.</span><span class="n">as_new_file_set</span><span class="p">()</span>
+</pre></div>
+</div>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>FilesList object. It’s just a python list with additional
+functions for file and file set operations.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[(</span><span class="s2">&quot;local_path&quot;</span><span class="p">,</span> <span class="s2">&quot;remote_path:version&quot;</span><span class="p">),</span> <span class="o">...</span><span class="p">]</span>
+</pre></div>
+</div>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="acaisdk.file.File.download">
+<em class="property">static </em><code class="sig-name descname">download</code><span class="sig-paren">(</span><em class="sig-param">remote_to_local: Dict[str, str]</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#acaisdk.file.File.download" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download multiple remote files to local.</p>
+<p>If version is not specified for remote file, then the latest version
+will be downloaded by default.</p>
+<p>Local path can be a directory, e.g. For a input dict
+<code class="code docutils literal notranslate"><span class="pre">{&quot;/my_acai/b/c.json&quot;:</span> <span class="pre">&quot;/home/ubuntu/stuff/&quot;}</span></code>, <cite>c.json</cite> will be
+downloaded to <cite>/home/ubuntu/stuff/c.json</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>remote_to_local</strong> – <code class="code docutils literal notranslate"><span class="pre">{&quot;remote_path:version&quot;:</span> <span class="pre">&quot;local_path&quot;,</span> <span class="pre">...}</span></code></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="acaisdk.file.File.convert_to_file_mapping">
+<em class="property">static </em><code class="sig-name descname">convert_to_file_mapping</code><span class="sig-paren">(</span><em class="sig-param">local_paths: List[str], remote_path</em><span class="sig-paren">)</span> &#x2192; Tuple[acaisdk.fileset.FilesList, List[str]]<a class="headerlink" href="#acaisdk.file.File.convert_to_file_mapping" title="Permalink to this definition">¶</a></dt>
+<dd><p>A nice method to make you happy.</p>
+<p>Converts local file and directory paths to their
+corresponding remote paths. So that you do not need to specify
+local to remote path mappings one by one for the <cite>upload</cite> function.</p>
+<p>For a local file system like</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>/a/b/c/1.txt
+/a/b/c/d/2.txt
+/a/b/3.txt
+</pre></div>
+</div>
+<p>Running</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">convert_to_file_mapping</span><span class="p">([</span><span class="s1">&#39;/a/b/3.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;/a/b/c/&#39;</span><span class="p">],</span> <span class="s1">&#39;/allen/&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>will result in a remote file system structure like:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>/allen/1.txt
+/allen/d/2.txt
+/allen/3.txt
+</pre></div>
+</div>
+<p>Notice that if you are writing to a remote directory, a <cite>“/”</cite> must be
+added at the end of the path string, like <cite>“/allen/”</cite> instead of
+<cite>“/allen”</cite>.</p>
+<p>Example usage:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">File</span><span class="o">.</span><span class="n">convert_to_file_mapping</span><span class="p">([</span><span class="s1">&#39;/a/b/c/&#39;</span><span class="p">],</span> <span class="s1">&#39;/allen/&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> \
+    <span class="o">.</span><span class="n">upload</span><span class="p">()</span> \
+    <span class="o">.</span><span class="n">as_new_file_set</span><span class="p">(</span><span class="s1">&#39;my_training_files&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Notice that the method is not transactional. It does not protect
+itself from change of files in local directories.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p>A FileList for successfully mapped paths.</p></li>
+<li><p>A list of files that are not accessible.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="acaisdk.file.File.list_file_versions">
+<em class="property">static </em><code class="sig-name descname">list_file_versions</code><span class="sig-paren">(</span><em class="sig-param">file_name</em><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.file.File.list_file_versions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="acaisdk.file.File.resolve_vague_path">
+<em class="property">static </em><code class="sig-name descname">resolve_vague_path</code><span class="sig-paren">(</span><em class="sig-param">vague_path</em><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.file.File.resolve_vague_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-acaisdk.fileset">
+<span id="file-set"></span><h2>File Set<a class="headerlink" href="#module-acaisdk.fileset" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="acaisdk.fileset.FilesList">
+<em class="property">class </em><code class="sig-prename descclassname">acaisdk.fileset.</code><code class="sig-name descname">FilesList</code><a class="headerlink" href="#acaisdk.fileset.FilesList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
+<dl class="method">
+<dt id="acaisdk.fileset.FilesList.as_new_file_set">
+<code class="sig-name descname">as_new_file_set</code><span class="sig-paren">(</span><em class="sig-param">file_set_name</em><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.fileset.FilesList.as_new_file_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a file set for a newly uploaded batch.</p>
+<p>Usage can be found at <cite>File.upload</cite> and <cite>File.convert_to_file_mapping</cite></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="acaisdk.fileset.FilesList.upload">
+<code class="sig-name descname">upload</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.fileset.FilesList.upload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upload a FilesList to data lake.</p>
+<p>Usage can be found at <cite>File.convert_to_file_mapping</cite></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="acaisdk.fileset.FileSet">
+<em class="property">class </em><code class="sig-prename descclassname">acaisdk.fileset.</code><code class="sig-name descname">FileSet</code><a class="headerlink" href="#acaisdk.fileset.FileSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="acaisdk.fileset.FileSet.create_file_set">
+<em class="property">static </em><code class="sig-name descname">create_file_set</code><span class="sig-paren">(</span><em class="sig-param">file_set_name: str</em>, <em class="sig-param">remote_file_list: Iterable</em><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.fileset.FileSet.create_file_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a file set on a list of remote files.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="acaisdk.fileset.FileSet.list_file_set_content">
+<em class="property">static </em><code class="sig-name descname">list_file_set_content</code><span class="sig-paren">(</span><em class="sig-param">vague_name</em><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#acaisdk.fileset.FileSet.list_file_set_content" title="Permalink to this definition">¶</a></dt>
+<dd><p>List all files in a file set.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="acaisdk.fileset.FileSet.resolve_vague_name">
+<em class="property">static </em><code class="sig-name descname">resolve_vague_name</code><span class="sig-paren">(</span><em class="sig-param">vague_name</em><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.fileset.FileSet.resolve_vague_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="acaisdk.fileset.FileSet.download_file_set">
+<em class="property">static </em><code class="sig-name descname">download_file_set</code><span class="sig-paren">(</span><em class="sig-param">vague_name: str</em>, <em class="sig-param">mount_point: str = None</em>, <em class="sig-param">force: bool = False</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#acaisdk.fileset.FileSet.download_file_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download a file set to local device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vague_name</strong> – File set name can be vague (with or without version number). Latest
+version of the file set will be chosen if no version given.</p></li>
+<li><p><strong>mount_point</strong> – <p>Which local directory to download the file set to. This won’t
+actually “mount” any device on your local file system. But the
+behavior will be similar to mounting the root directory in the
+remote file system to the “mount_point” directory.</p>
+<p>e.g. For a file set <cite>allen:2</cite> with file</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>/allen/1.txt:1
+/allen/d/2.txt:1
+/allen/3.txt:3
+</pre></div>
+</div>
+<p>calling <code class="code docutils literal notranslate"><span class="pre">download_file_set('allen:2',</span> <span class="pre">'/local_tmp/')</span></code></p>
+<p>results in a local directory as:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>/local_tmp/allen/1.txt
+/local_tmp/allen/d/2.txt
+/local_tmp/allen/3.txt
+</pre></div>
+</div>
+<p>Notice that the SDK won’t create the mount_point directory for you,
+but it will create folders inside the mount_point automatically.</p>
+</p></li>
+<li><p><strong>force</strong> – If local directory has conflicting file names, choose if
+continue to download.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="acaisdk.fileset.FileSet.list_file_set_versions">
+<em class="property">static </em><code class="sig-name descname">list_file_set_versions</code><span class="sig-paren">(</span><em class="sig-param">file_set_name</em><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.fileset.FileSet.list_file_set_versions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="acaisdk.fileset.FileSet.list_file_sets">
+<em class="property">static </em><code class="sig-name descname">list_file_sets</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List[str]<a class="headerlink" href="#acaisdk.fileset.FileSet.list_file_sets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show all file sets under the project.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-acaisdk.job">
+<span id="job"></span><h2>Job<a class="headerlink" href="#module-acaisdk.job" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="acaisdk.job.Job">
+<em class="property">class </em><code class="sig-prename descclassname">acaisdk.job.</code><code class="sig-name descname">Job</code><a class="headerlink" href="#acaisdk.job.Job" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run a job on the cloud.</p>
+<p>Typical usage:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">attr</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;v_cpu&quot;</span><span class="p">:</span> <span class="s2">&quot;0.5&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;memory&quot;</span><span class="p">:</span> <span class="s2">&quot;320Mi&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;gpu&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;command&quot;</span><span class="p">:</span> <span class="s2">&quot;echo hello world from default job&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;container_image&quot;</span><span class="p">:</span> <span class="s2">&quot;pytorch&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;input_file_set&#39;</span><span class="p">:</span> <span class="s1">&#39;sterling&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;output_path&#39;</span><span class="p">:</span> <span class="s1">&#39;outputlalapath&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;code&#39;</span><span class="p">:</span> <span class="s1">&#39;/albertinputs/demo.zip&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;nothinghere&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;rubbish2&#39;</span>
+<span class="p">}</span>
+
+<span class="n">Job</span><span class="p">()</span><span class="o">.</span><span class="n">with_attributes</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span><span class="o">.</span><span class="n">register</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Variables</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> – (int) Job id. Not needed for job registration since it does not exist
+at that point (obviously).</p></li>
+<li><p><strong>name</strong> – Job name</p></li>
+<li><p><strong>input_file_set</strong> – This input set will be downloaded to the container where the job is
+executed. If no version given, latest file set is chosen.</p></li>
+<li><p><strong>output_path</strong> – Only files written to this output folder in the container will be
+uploaded and packed into a new file set. Can be a relative path
+(relative to <cite>/acai/</cite> directory).</p></li>
+<li><p><strong>output_file_set</strong> – Output file set name. Not need for job submission since the name is
+decided by the backend.</p></li>
+<li><p><strong>code</strong> – Remote location of the code zip.</p></li>
+<li><p><strong>command</strong> – The command in which the code is executed. As this is a shell command,
+the execution is carried out by the default shell in the container.
+One benefit is that you can make full use of shell grammars like
+<code class="code docutils literal notranslate"><span class="pre">&amp;&amp;</span></code>, <code class="code docutils literal notranslate"><span class="pre">;</span></code> and <code class="code docutils literal notranslate"><span class="pre">|</span></code>, etc.</p></li>
+<li><p><strong>container_image</strong> – ID for the docker image so that ACAI can pull the image down to the
+execution host.</p></li>
+<li><p><strong>description</strong> – Some description for the job. Just like <code class="code docutils literal notranslate"><span class="pre">git</span> <span class="pre">commit</span> <span class="pre">-m</span></code></p></li>
+<li><p><strong>submitted_time</strong> – Unix timestamp of the submission time. Not needed for submission.</p></li>
+<li><p><strong>updated_time</strong> – Deprecated.</p></li>
+<li><p><strong>v_cpu</strong> – (str) Number of virtual CPUs the execution container can have.
+See doc for <cite>with_resources()</cite> for recommended usage.</p></li>
+<li><p><strong>memory</strong> – (str) The amount of physical memory for the container.
+Notice that exceeding the limit will result in job failure.
+See doc for <cite>with_resources()</cite> for recommended usage.</p></li>
+<li><p><strong>gpu</strong> – (str) Number of GPUs to allocate to the container. See doc for
+<cite>with_resources()</cite> for recommended usage.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="acaisdk.job.Job.register">
+<code class="sig-name descname">register</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.job.Job.register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register the job with ACAI backend. Only registered job can be run.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="acaisdk.job.Job.run">
+<code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.job.Job.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute registered job.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="acaisdk.job.Job.with_attributes">
+<code class="sig-name descname">with_attributes</code><span class="sig-paren">(</span><em class="sig-param">d: dict</em><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.job.Job.with_attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fill job object with attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>d</strong> – Dict of attributes to add to the job object.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Updated job object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="acaisdk.job.Job.with_resources">
+<code class="sig-name descname">with_resources</code><span class="sig-paren">(</span><em class="sig-param">vcpu: Union[int</em>, <em class="sig-param">str] = None</em>, <em class="sig-param">gpu: Union[int</em>, <em class="sig-param">str] = None</em>, <em class="sig-param">mem: Union[int</em>, <em class="sig-param">str] = None</em><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.job.Job.with_resources" title="Permalink to this definition">¶</a></dt>
+<dd><p>A more friendly method for adding resource constraints.</p>
+<p>Each of the three parameters can be str or int.</p>
+<p>For example,</p>
+<p><code class="code docutils literal notranslate"><span class="pre">mem=1e9</span></code> means max mem usage of 1e9 bytes (~1GB)</p>
+<p><code class="code docutils literal notranslate"><span class="pre">mem=&quot;100Mi&quot;</span></code> means max mem usage of 100MB</p>
+<p>Memory string format is the same as here:
+<a class="reference external" href="https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/#meaning-of-memory">https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/#meaning-of-memory</a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="acaisdk.job.Job.from_dict">
+<em class="property">static </em><code class="sig-name descname">from_dict</code><span class="sig-paren">(</span><em class="sig-param">d: &lt;property object at 0x7f41260e7228&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.job.Job.from_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for <code class="code docutils literal notranslate"><span class="pre">with_attributes()</span></code> method.
+Has the exact same behavior.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="acaisdk.job.Job.from_json">
+<em class="property">static </em><code class="sig-name descname">from_json</code><span class="sig-paren">(</span><em class="sig-param">path</em><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.job.Job.from_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for <code class="code docutils literal notranslate"><span class="pre">with_attributes()</span></code> method. For when you want to
+load the job settings from a JSON file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="acaisdk.job.Job.from_yaml">
+<em class="property">static </em><code class="sig-name descname">from_yaml</code><span class="sig-paren">(</span><em class="sig-param">path</em><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.job.Job.from_yaml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for <code class="code docutils literal notranslate"><span class="pre">with_attributes()</span></code> method. For when you want to
+load the job settings from a YAML file.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-acaisdk.meta">
+<span id="metadata"></span><h2>Metadata<a class="headerlink" href="#module-acaisdk.meta" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="acaisdk.meta.ConditionType">
+<em class="property">class </em><code class="sig-prename descclassname">acaisdk.meta.</code><code class="sig-name descname">ConditionType</code><a class="headerlink" href="#acaisdk.meta.ConditionType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="attribute">
+<dt id="acaisdk.meta.ConditionType.MIN">
+<code class="sig-name descname">MIN</code><em class="property"> = 1</em><a class="headerlink" href="#acaisdk.meta.ConditionType.MIN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="acaisdk.meta.ConditionType.MAX">
+<code class="sig-name descname">MAX</code><em class="property"> = 2</em><a class="headerlink" href="#acaisdk.meta.ConditionType.MAX" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="acaisdk.meta.ConditionType.RANGE">
+<code class="sig-name descname">RANGE</code><em class="property"> = 3</em><a class="headerlink" href="#acaisdk.meta.ConditionType.RANGE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="acaisdk.meta.ConditionType.ARRAY">
+<code class="sig-name descname">ARRAY</code><em class="property"> = 4</em><a class="headerlink" href="#acaisdk.meta.ConditionType.ARRAY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="acaisdk.meta.ConditionType.VALUE">
+<code class="sig-name descname">VALUE</code><em class="property"> = 5</em><a class="headerlink" href="#acaisdk.meta.ConditionType.VALUE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="acaisdk.meta.Condition">
+<em class="property">class </em><code class="sig-prename descclassname">acaisdk.meta.</code><code class="sig-name descname">Condition</code><span class="sig-paren">(</span><em class="sig-param">key: str</em><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.meta.Condition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="acaisdk.meta.Condition.value">
+<code class="sig-name descname">value</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.meta.Condition.value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="acaisdk.meta.Condition.max">
+<code class="sig-name descname">max</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.meta.Condition.max" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="acaisdk.meta.Condition.min">
+<code class="sig-name descname">min</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.meta.Condition.min" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="acaisdk.meta.Condition.range">
+<code class="sig-name descname">range</code><span class="sig-paren">(</span><em class="sig-param">start</em>, <em class="sig-param">end</em><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.meta.Condition.range" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="acaisdk.meta.Condition.array">
+<code class="sig-name descname">array</code><span class="sig-paren">(</span><em class="sig-param">array: Iterable</em><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.meta.Condition.array" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="acaisdk.meta.Condition.to_dict">
+<code class="sig-name descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.meta.Condition.to_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="acaisdk.meta.Meta">
+<em class="property">class </em><code class="sig-prename descclassname">acaisdk.meta.</code><code class="sig-name descname">Meta</code><a class="headerlink" href="#acaisdk.meta.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="acaisdk.meta.Meta.update_file_meta">
+<em class="property">static </em><code class="sig-name descname">update_file_meta</code><span class="sig-paren">(</span><em class="sig-param">file_path</em>, <em class="sig-param">tags: list = None</em>, <em class="sig-param">kv_pairs: dict = None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.meta.Meta.update_file_meta" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="acaisdk.meta.Meta.update_file_set_meta">
+<em class="property">static </em><code class="sig-name descname">update_file_set_meta</code><span class="sig-paren">(</span><em class="sig-param">file_set</em>, <em class="sig-param">tags: list = None</em>, <em class="sig-param">kv_pairs: dict = None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.meta.Meta.update_file_set_meta" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="acaisdk.meta.Meta.del_file_meta">
+<em class="property">static </em><code class="sig-name descname">del_file_meta</code><span class="sig-paren">(</span><em class="sig-param">file_path</em>, <em class="sig-param">keys: list</em>, <em class="sig-param">tags: list</em><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.meta.Meta.del_file_meta" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="acaisdk.meta.Meta.del_file_set_meta">
+<em class="property">static </em><code class="sig-name descname">del_file_set_meta</code><span class="sig-paren">(</span><em class="sig-param">file_set</em>, <em class="sig-param">keys: list</em>, <em class="sig-param">tags: list</em><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.meta.Meta.del_file_set_meta" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="acaisdk.meta.Meta.find_file">
+<em class="property">static </em><code class="sig-name descname">find_file</code><span class="sig-paren">(</span><em class="sig-param">*conditions: acaisdk.meta.Condition</em><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.meta.Meta.find_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="acaisdk.meta.Meta.find_job">
+<em class="property">static </em><code class="sig-name descname">find_job</code><span class="sig-paren">(</span><em class="sig-param">*conditions: acaisdk.meta.Condition</em><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.meta.Meta.find_job" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="acaisdk.meta.Meta.find_file_set">
+<em class="property">static </em><code class="sig-name descname">find_file_set</code><span class="sig-paren">(</span><em class="sig-param">*conditions: acaisdk.meta.Condition</em><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.meta.Meta.find_file_set" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="acaisdk.meta.Meta.query_meta">
+<em class="property">static </em><code class="sig-name descname">query_meta</code><span class="sig-paren">(</span><em class="sig-param">entity_type: str</em>, <em class="sig-param">*conditions: acaisdk.meta.Condition</em><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.meta.Meta.query_meta" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="acaisdk.meta.Meta.get_file_meta">
+<em class="property">static </em><code class="sig-name descname">get_file_meta</code><span class="sig-paren">(</span><em class="sig-param">file_list: List[str]</em><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.meta.Meta.get_file_meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>file_list can be of vague name</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-acaisdk.project">
+<span id="project"></span><h2>Project<a class="headerlink" href="#module-acaisdk.project" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="acaisdk.project.Project">
+<em class="property">class </em><code class="sig-prename descclassname">acaisdk.project.</code><code class="sig-name descname">Project</code><a class="headerlink" href="#acaisdk.project.Project" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="acaisdk.project.Project.create_project">
+<em class="property">static </em><code class="sig-name descname">create_project</code><span class="sig-paren">(</span><em class="sig-param">project_id: str</em>, <em class="sig-param">admin_token: str</em>, <em class="sig-param">project_admin: str</em><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.project.Project.create_project" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="acaisdk.project.Project.create_user">
+<em class="property">static </em><code class="sig-name descname">create_user</code><span class="sig-paren">(</span><em class="sig-param">project_id: str</em>, <em class="sig-param">admin_token: str</em>, <em class="sig-param">user: str</em><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.project.Project.create_user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to acaisdk’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Chang Xu
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
