@@ -159,7 +159,7 @@
  | <a href="#P"><strong>P</strong></a>
  | <a href="#Q"><strong>Q</strong></a>
  | <a href="#R"><strong>R</strong></a>
- | <a href="#T"><strong>T</strong></a>
+ | <a href="#S"><strong>S</strong></a>
  | <a href="#U"><strong>U</strong></a>
  | <a href="#V"><strong>V</strong></a>
  | <a href="#W"><strong>W</strong></a>
@@ -182,8 +182,6 @@
 </li>
       <li><a href="acaisdk.html#module-acaisdk.project">acaisdk.project (module)</a>
 </li>
-      <li><a href="acaisdk.html#acaisdk.meta.ConditionType.ARRAY">ARRAY (acaisdk.meta.ConditionType attribute)</a>
-</li>
       <li><a href="acaisdk.html#acaisdk.meta.Condition.array">array() (acaisdk.meta.Condition method)</a>
 </li>
       <li><a href="acaisdk.html#acaisdk.fileset.FilesList.as_new_file_set">as_new_file_set() (acaisdk.fileset.FilesList method)</a>
@@ -194,9 +192,9 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="acaisdk.html#acaisdk.meta.Condition">Condition (class in acaisdk.meta)</a>
+      <li><a href="acaisdk.html#acaisdk.job.Job.check_job_status">check_job_status() (acaisdk.job.Job static method)</a>
 </li>
-      <li><a href="acaisdk.html#acaisdk.meta.ConditionType">ConditionType (class in acaisdk.meta)</a>
+      <li><a href="acaisdk.html#acaisdk.meta.Condition">Condition (class in acaisdk.meta)</a>
 </li>
       <li><a href="acaisdk.html#acaisdk.credentials.Credentials.configure">configure() (acaisdk.credentials.Credentials static method)</a>
 </li>
@@ -222,8 +220,12 @@
 </li>
       <li><a href="acaisdk.html#acaisdk.meta.Meta.del_file_set_meta">del_file_set_meta() (acaisdk.meta.Meta static method)</a>
 </li>
+      <li><a href="acaisdk.html#acaisdk.meta.Meta.del_job_meta">del_job_meta() (acaisdk.meta.Meta static method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="acaisdk.html#acaisdk.job.Job.dict">dict() (acaisdk.job.Job property)</a>
+</li>
       <li><a href="acaisdk.html#acaisdk.file.File.download">download() (acaisdk.file.File static method)</a>
 </li>
       <li><a href="acaisdk.html#acaisdk.fileset.FileSet.download_file_set">download_file_set() (acaisdk.fileset.FileSet static method)</a>
@@ -239,6 +241,8 @@
       <li><a href="acaisdk.html#acaisdk.fileset.FileSet">FileSet (class in acaisdk.fileset)</a>
 </li>
       <li><a href="acaisdk.html#acaisdk.fileset.FilesList">FilesList (class in acaisdk.fileset)</a>
+</li>
+      <li><a href="acaisdk.html#acaisdk.job.Job.find">find() (acaisdk.job.Job static method)</a>
 </li>
       <li><a href="acaisdk.html#acaisdk.meta.Meta.find_file">find_file() (acaisdk.meta.Meta static method)</a>
 </li>
@@ -288,6 +292,8 @@
 </li>
       <li><a href="acaisdk.html#acaisdk.file.File.list_file_versions">list_file_versions() (acaisdk.file.File static method)</a>
 </li>
+      <li><a href="acaisdk.html#acaisdk.job.Job.list_jobs">list_jobs() (acaisdk.job.Job static method)</a>
+</li>
       <li><a href="acaisdk.html#acaisdk.credentials.Credentials.load">load() (acaisdk.credentials.Credentials static method)</a>
 </li>
   </ul></td>
@@ -296,15 +302,11 @@
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="acaisdk.html#acaisdk.meta.ConditionType.MAX">MAX (acaisdk.meta.ConditionType attribute)</a>
-</li>
       <li><a href="acaisdk.html#acaisdk.meta.Condition.max">max() (acaisdk.meta.Condition method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="acaisdk.html#acaisdk.meta.Meta">Meta (class in acaisdk.meta)</a>
-</li>
-      <li><a href="acaisdk.html#acaisdk.meta.ConditionType.MIN">MIN (acaisdk.meta.ConditionType attribute)</a>
 </li>
       <li><a href="acaisdk.html#acaisdk.meta.Condition.min">min() (acaisdk.meta.Condition method)</a>
 </li>
@@ -330,8 +332,6 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="acaisdk.html#acaisdk.meta.ConditionType.RANGE">RANGE (acaisdk.meta.ConditionType attribute)</a>
-</li>
       <li><a href="acaisdk.html#acaisdk.meta.Condition.range">range() (acaisdk.meta.Condition method)</a>
 </li>
       <li><a href="acaisdk.html#acaisdk.job.Job.register">register() (acaisdk.job.Job method)</a>
@@ -347,10 +347,10 @@
   </ul></td>
 </tr></table>
 
-<h2 id="T">T</h2>
+<h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="acaisdk.html#acaisdk.meta.Condition.to_dict">to_dict() (acaisdk.meta.Condition method)</a>
+      <li><a href="acaisdk.html#acaisdk.job.Job.status">status() (acaisdk.job.Job method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -364,6 +364,8 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="acaisdk.html#acaisdk.meta.Meta.update_job_meta">update_job_meta() (acaisdk.meta.Meta static method)</a>
+</li>
       <li><a href="acaisdk.html#acaisdk.file.File.upload">upload() (acaisdk.file.File static method)</a>
 
       <ul>
@@ -375,10 +377,6 @@
 
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="acaisdk.html#acaisdk.meta.ConditionType.VALUE">VALUE (acaisdk.meta.ConditionType attribute)</a>
-</li>
-  </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="acaisdk.html#acaisdk.meta.Condition.value">value() (acaisdk.meta.Condition method)</a>
 </li>

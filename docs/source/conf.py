@@ -12,7 +12,7 @@
 #
 import os
 import sys
-sys.path.insert(0, '/mnt/c/Users/Chang XU/GoogleDrive/CMU.MCDS/Acai/acaisdk')
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)) + '/../../')
 
 
 # -- Project information -----------------------------------------------------

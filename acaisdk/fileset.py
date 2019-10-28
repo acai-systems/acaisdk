@@ -73,8 +73,7 @@ class FileSet:
                 /allen/3.txt:3
 
             calling :code:`download_file_set('allen:2', '/local_tmp/')`
-
-            results in a local directory as:
+            results in a local directory hierarchy of:
 
             .. code-block:: text
 

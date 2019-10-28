@@ -3,7 +3,25 @@ import yaml
 from acaisdk.utils.exceptions import *
 from collections import OrderedDict
 from acaisdk.services.api_calls import *
-from typing import Union, Tuple
+from typing import Union, Tuple, List, Dict
+from pprint import pformat
+import time
+
+
+class JobStatus(Enum):
+    QUEUEING = auto()
+    LAUNCHING = auto()
+    DOWNLOADING = auto()
+    RUNNING = auto()
+    UPLOADING = auto()
+    FINISHED = auto()
+    FAILED = auto()
+    KILLED = auto()
+    CONTAINER_CRASHED = auto()
+
+    @staticmethod
+    def from_str(string):
+        return JobStatus[string.upper().replace(' ', '_')]
 
 
 class Job:
@@ -18,12 +36,12 @@ class Job:
             "memory": "320Mi",
             "gpu": "0",
             "command": "echo hello world from default job",
-            "container_image": "pytorch",
+            "container_image": "pytorch/pytorch",
             'input_file_set': 'sterling',
             'output_path': 'outputlalapath',
             'code': '/albertinputs/demo.zip',
             'description': 'nothinghere',
-            'name': 'rubbish2'
+            'name': 'my test job'
         }
 
         Job().with_attributes(attr).register().run()
@@ -141,7 +159,7 @@ class Job:
         debug(r)
         return self
 
-    def run(self):
+    def run(self) -> 'Job':
         """Execute registered job."""
         if not self.registered:
             raise AcaiException('Job not registered')
@@ -153,30 +171,7 @@ class Job:
             .run()
         self.submitted = True
         debug(r)
-        return r
-
-    def info(self):
-        r = RestRequest(JobRegistryApi.job_info) \
-            .with_query({'job_id': self.id}) \
-            .with_credentials() \
-            .run()
-        self.with_attributes(r)
-
-    @staticmethod
-    def list_jobs():
-        # """User id is read implicitly"""
-        pass
-
-    # ==== Monitor ===
-    def update_job_status(self):
-        pass  # not open for CLI
-
-    def status(self):
-        r = RestRequest(JobRegistryApi.job_status) \
-            .with_query({'job_id': self.id}) \
-            .with_credentials() \
-            .run()
-        return r
+        return self
 
     def _validate(self):
         fields_not_set = [f for f in self._required_fields
@@ -186,7 +181,7 @@ class Job:
                    '{}'.format(fields_not_set)
             raise ArgError(_msg)
 
-    def with_attributes(self, d: dict):
+    def with_attributes(self, d: dict) -> 'Job':
         """Fill job object with attributes.
 
         :param d: Dict of attributes to add to the job object.
@@ -198,12 +193,10 @@ class Job:
     def with_resources(self,
                        vcpu: Union[int, str] = None,
                        gpu: Union[int, str] = None,
-                       mem: Union[int, str] = None):
+                       mem: Union[int, str] = None) -> 'Job':
         """A more friendly method for adding resource constraints.
 
-        Each of the three parameters can be str or int.
-
-        For example,
+        Each of the three parameters can be str or int. For example,
 
         :code:`mem=1e9` means max mem usage of 1e9 bytes (~1GB)
 
@@ -213,6 +206,7 @@ class Job:
         https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/#meaning-of-memory
 
         """
+
         # TODO: autoprovision
         def _to_string(v, name):
             if type(v) == int:
@@ -234,22 +228,112 @@ class Job:
 
         return self
 
+    # ===== INFO =====
+    @staticmethod
+    def list_jobs_json() -> dict:
+        return RestRequest(JobRegistryApi.jobs) \
+            .with_credentials() \
+            .run()
+
+    @staticmethod
+    def list_jobs() -> 'List[Job]':
+        """List all jobs under current project.
+
+        :return: a list of Job objects
+        """
+        return [Job().with_attributes(d) for d in Job.list_jobs_json()]
+
+    @staticmethod
+    def find(job_id: int) -> 'Job':
+        """Find a job by job ID.
+
+        :param job_id: integer job ID
+        :return: Job object of the found job.
+        """
+        j = Job()
+        j.id = job_id
+        return j.with_attributes(j._info())
+
+    def _info(self):
+        return RestRequest(JobRegistryApi.job) \
+            .with_query({'job_id': self.id}) \
+            .with_credentials() \
+            .run()
+
+    # ===== STATUS =====
+    @staticmethod
+    def check_job_status(job_id) -> 'Job':
+        """Check job status by job ID.
+
+        Usage:
+
+        >>> Job.check_job_status(10)
+        """
+        return Job.find(job_id).status()
+
+    def status(self) -> 'Job':
+        """Check the status of the current job.
+
+        Possible status:
+
+        .. code-block::
+
+            Queueing
+            Launching
+            Downloading
+            Running
+            Uploading
+            Finished
+            Failed
+            Killed
+            Container Crashed
+            Unknown
+
+        Usage:
+
+        >>> my_job = Job.find(10).status()
+        """
+        return RestRequest(JobMonitorApi.job_status) \
+            .with_query({'job_id': self.id}) \
+            .with_credentials() \
+            .run()
+
+    def wait(self):
+        # while 1:
+        #     status = JobStatus.from_str(self.status()['status'])
+        #     if status in ()
+        #     time.sleep(10)
+        pass
+
     @property
     def dict(self) -> OrderedDict:
+        """Get a dictionary representation of the job.
+
+        Usage:
+
+        >>> j = Job.find(10)
+        >>> d = j.dict
+
+        Just to digress a bit, to get a pretty formatted string
+        representation of a job you can just do:
+
+        >>> j = Job.find(10)
+        >>> print(j)
+        """
         r = OrderedDict()
         [r.update({s: getattr(self, s)}) for s in self.__slots__
          if hasattr(self, s) and s not in self._blacklist_fields]
         return r
 
     @staticmethod
-    def from_dict(d: dict):
+    def from_dict(d: Dict) -> 'Job':
         """Wrapper for :code:`with_attributes()` method.
         Has the exact same behavior.
         """
         return Job().with_attributes(d)
 
     @staticmethod
-    def from_json(path):
+    def from_json(path) -> 'Job':
         """Wrapper for :code:`with_attributes()` method. For when you want to
         load the job settings from a JSON file.
         """
@@ -257,12 +341,15 @@ class Job:
             return Job.from_dict(json.load(f))
 
     @staticmethod
-    def from_yaml(path):
+    def from_yaml(path) -> 'Job':
         """Wrapper for :code:`with_attributes()` method. For when you want to
         load the job settings from a YAML file.
         """
         with open(path, 'r') as f:
             return Job.from_dict(yaml.load(f))
+
+    def __repr__(self):
+        return pformat(dict(self.dict))
 
 
 class ProfilingJob(object):

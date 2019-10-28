@@ -1,6 +1,13 @@
 ACAI SDK
 ===============
 
+Project
+----------------------
+
+.. automodule:: acaisdk.project
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Credentials
 --------------------------
@@ -33,7 +40,7 @@ Job
 .. automodule:: acaisdk.job
    :members:
    :undoc-members:
-   :exclude-members: ProfilingJob, Job
+   :exclude-members: ProfilingJob, Job, JobStatus
    :show-inheritance:
 
 .. autoclass:: Job
@@ -46,12 +53,13 @@ Metadata
 .. automodule:: acaisdk.meta
    :members:
    :undoc-members:
+   :exclude-members: ConditionType, Condition
    :show-inheritance:
 
-Project
-----------------------
-
-.. automodule:: acaisdk.project
+.. autoclass:: Condition
    :members:
    :undoc-members:
-   :show-inheritance:
+   :exclude-members: to_dict
+
+
+

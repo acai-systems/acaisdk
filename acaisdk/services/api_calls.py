@@ -33,6 +33,7 @@ class Services(Enum):
                 MetadataApi: 'meta',
                 JobRegistryApi: 'job_registry',
                 JobSchedulerApi: 'job_scheduler',
+                JobMonitorApi: 'job_monitor',
                 ProvenanceApi: 'provenance'}[type(self)]
 
     @property
@@ -72,10 +73,16 @@ class StorageApi(Services):
 
 class JobRegistryApi(Services):
     new_job = EnumFactory.POST()
+    job = EnumFactory.GET()
+    jobs = EnumFactory.GET()
 
 
 class JobSchedulerApi(Services):
     new_job = EnumFactory.POST()
+
+
+class JobMonitorApi(Services):
+    job_status = EnumFactory.GET()
 
 
 class MetadataApi(Services):
@@ -133,8 +140,10 @@ class RestRequest:
               port,
               self.service.service_name,
               self.service.name)
+
         if self.service.method == RestMethods.get:
             self.query.update(self.credentials)
+            debug('GET query', json.dumps(self.query))
             return rest_utils.get(endpoint,
                                   port,
                                   self.service.service_name,

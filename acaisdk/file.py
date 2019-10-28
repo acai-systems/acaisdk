@@ -69,6 +69,7 @@ class File:
             l_r_mapping = local_to_remote.items()
 
         versioned_mapping = fileset.FilesList()
+        print(l_r_mapping)
         for local_path, remote_path in l_r_mapping:
             r = File._get_upload_link(remote_path)
             s3_url, file_id = r['s3_url'], r['id']
@@ -76,6 +77,7 @@ class File:
                 print('Uploading file {} to {}'
                       ''.format(local_path, remote_path))
             FileIO(local_path).upload(s3_url)
+            debug('uploaded to {}'.format(s3_url))
             versioned_mapping.append((local_path, file_id))
 
         if results:
