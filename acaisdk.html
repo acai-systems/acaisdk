@@ -649,7 +649,7 @@ See doc for <cite>with_resources()</cite> for recommended usage.</p></li>
 
 <dl class="method">
 <dt id="acaisdk.job.Job.check_job_status">
-<em class="property">static </em><code class="sig-name descname">check_job_status</code><span class="sig-paren">(</span><em class="sig-param">job_id</em><span class="sig-paren">)</span> &#x2192; acaisdk.job.Job<a class="headerlink" href="#acaisdk.job.Job.check_job_status" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">check_job_status</code><span class="sig-paren">(</span><em class="sig-param">job_id</em><span class="sig-paren">)</span> &#x2192; acaisdk.job.JobStatus<a class="headerlink" href="#acaisdk.job.Job.check_job_status" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check job status by job ID.</p>
 <p>Usage:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Job</span><span class="o">.</span><span class="n">check_job_status</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
@@ -659,31 +659,28 @@ See doc for <cite>with_resources()</cite> for recommended usage.</p></li>
 
 <dl class="method">
 <dt id="acaisdk.job.Job.status">
-<code class="sig-name descname">status</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.job.Job.status" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">status</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; acaisdk.job.JobStatus<a class="headerlink" href="#acaisdk.job.Job.status" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check the status of the current job.</p>
-<p>Possible status:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Queueing</span>
-<span class="n">Launching</span>
-<span class="n">Downloading</span>
-<span class="n">Running</span>
-<span class="n">Uploading</span>
-<span class="n">Finished</span>
-<span class="n">Failed</span>
-<span class="n">Killed</span>
-<span class="n">Container</span> <span class="n">Crashed</span>
-<span class="n">Unknown</span>
-</pre></div>
-</div>
 <p>Usage:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_job</span> <span class="o">=</span> <span class="n">Job</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">status</span><span class="p">()</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">status</span> <span class="o">=</span> <span class="n">Job</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">status</span><span class="p">()</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#acaisdk.job.JobStatus" title="acaisdk.job.JobStatus"><code class="xref py py-class docutils literal notranslate"><span class="pre">JobStatus</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="acaisdk.job.Job.wait">
 <code class="sig-name descname">wait</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; acaisdk.job.JobStatus<a class="headerlink" href="#acaisdk.job.Job.wait" title="Permalink to this definition">¶</a></dt>
 <dd><p>Block until job finish or fail.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#acaisdk.job.JobStatus" title="acaisdk.job.JobStatus"><code class="xref py py-class docutils literal notranslate"><span class="pre">JobStatus</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -724,6 +721,27 @@ load the job settings from a JSON file.</p>
 load the job settings from a YAML file.</p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="class">
+<dt id="acaisdk.job.JobStatus">
+<em class="property">class </em><code class="sig-prename descclassname">acaisdk.job.</code><code class="sig-name descname">JobStatus</code><a class="headerlink" href="#acaisdk.job.JobStatus" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Variables</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>QUEUEING</strong> – </p></li>
+<li><p><strong>LAUNCHING</strong> – </p></li>
+<li><p><strong>DOWNLOADING</strong> – </p></li>
+<li><p><strong>RUNNING</strong> – </p></li>
+<li><p><strong>UPLOADING</strong> – </p></li>
+<li><p><strong>FINISHED</strong> – </p></li>
+<li><p><strong>FAILED</strong> – </p></li>
+<li><p><strong>KILLED</strong> – </p></li>
+<li><p><strong>CONTAINER_CRASHED</strong> – </p></li>
+<li><p><strong>UNKNOWN</strong> – It seems that the job does not exist</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </div>

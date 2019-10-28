@@ -46,6 +46,8 @@ Job
 .. autoclass:: Job
    :members:
 
+.. autoclass:: JobStatus
+   :members:
 
 Metadata
 -------------------
