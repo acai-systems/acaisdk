@@ -9,6 +9,18 @@ import time
 
 
 class JobStatus(Enum):
+    """
+    :ivar QUEUEING:
+    :ivar LAUNCHING:
+    :ivar DOWNLOADING:
+    :ivar RUNNING:
+    :ivar UPLOADING:
+    :ivar FINISHED:
+    :ivar FAILED:
+    :ivar KILLED:
+    :ivar CONTAINER_CRASHED:
+    :ivar UNKNOWN: It seems that the job does not exist
+    """
     QUEUEING = auto()
     LAUNCHING = auto()
     DOWNLOADING = auto()
@@ -265,7 +277,7 @@ class Job:
 
     # ===== STATUS =====
     @staticmethod
-    def check_job_status(job_id) -> 'Job':
+    def check_job_status(job_id) -> JobStatus:
         """Check job status by job ID.
 
         Usage:
@@ -274,38 +286,25 @@ class Job:
         """
         return Job.find(job_id).status()
 
-    def status(self):
+    def status(self) -> JobStatus:
         """Check the status of the current job.
-
-        Possible status:
-
-        .. code-block::
-
-            Queueing
-            Launching
-            Downloading
-            Running
-            Uploading
-            Finished
-            Failed
-            Killed
-            Container Crashed
-            Unknown
 
         Usage:
 
-        >>> my_job = Job.find(10).status()
+        >>> status = Job.find(10).status()
+
+        :return: JobStatus Enum
         """
-        return RestRequest(JobMonitorApi.job_status) \
+        r = RestRequest(JobMonitorApi.job_status) \
             .with_query({'job_id': self.id}) \
             .with_credentials() \
             .run()
+        return JobStatus.from_str(r['status'])
 
     def wait(self) -> JobStatus:
-        """Block until job finish or fail.
-        """
+        """Block until job finish or fail."""
         while 1:
-            status = JobStatus.from_str(self.status()['status'])
+            status = self.status()
             if status in (JobStatus.FINISHED,
                           JobStatus.FAILED,
                           JobStatus.KILLED,

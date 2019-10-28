@@ -7,7 +7,7 @@ cd acaisdk/acaisdk/
 pip3 install -r requirements.txt
 ```
 
-## Run examples
+## Run an Example
 A workflow examples is located at the `example` folder.
 It is a wordcount task for text files. 
 The workflow is to create a project and a user under
