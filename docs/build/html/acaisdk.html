@@ -659,7 +659,7 @@ See doc for <cite>with_resources()</cite> for recommended usage.</p></li>
 
 <dl class="method">
 <dt id="acaisdk.job.Job.status">
-<code class="sig-name descname">status</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; acaisdk.job.Job<a class="headerlink" href="#acaisdk.job.Job.status" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">status</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.job.Job.status" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check the status of the current job.</p>
 <p>Possible status:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Queueing</span>
@@ -678,6 +678,12 @@ See doc for <cite>with_resources()</cite> for recommended usage.</p></li>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_job</span> <span class="o">=</span> <span class="n">Job</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">status</span><span class="p">()</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="method">
+<dt id="acaisdk.job.Job.wait">
+<code class="sig-name descname">wait</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; acaisdk.job.JobStatus<a class="headerlink" href="#acaisdk.job.Job.wait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Block until job finish or fail.</p>
 </dd></dl>
 
 <dl class="method">

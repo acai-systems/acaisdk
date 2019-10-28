@@ -18,6 +18,7 @@ class JobStatus(Enum):
     FAILED = auto()
     KILLED = auto()
     CONTAINER_CRASHED = auto()
+    UNKNOWN = auto()
 
     @staticmethod
     def from_str(string):
@@ -130,7 +131,8 @@ class Job:
         'description',
         'v_cpu',
         'gpu',
-        'memory', ]
+        'memory',
+    ]
     _blacklist_fields = [
         'id',
         'output_file_set',
@@ -252,6 +254,7 @@ class Job:
         """
         j = Job()
         j.id = job_id
+        j.registered = True
         return j.with_attributes(j._info())
 
     def _info(self):
@@ -271,7 +274,7 @@ class Job:
         """
         return Job.find(job_id).status()
 
-    def status(self) -> 'Job':
+    def status(self):
         """Check the status of the current job.
 
         Possible status:
@@ -298,12 +301,19 @@ class Job:
             .with_credentials() \
             .run()
 
-    def wait(self):
-        # while 1:
-        #     status = JobStatus.from_str(self.status()['status'])
-        #     if status in ()
-        #     time.sleep(10)
-        pass
+    def wait(self) -> JobStatus:
+        """Block until job finish or fail.
+        """
+        while 1:
+            status = JobStatus.from_str(self.status()['status'])
+            if status in (JobStatus.FINISHED,
+                          JobStatus.FAILED,
+                          JobStatus.KILLED,
+                          JobStatus.CONTAINER_CRASHED,
+                          JobStatus.UNKNOWN):
+                break
+            time.sleep(10)
+        return status
 
     @property
     def dict(self) -> OrderedDict:
