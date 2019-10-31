@@ -35,12 +35,12 @@ class Condition:
 
     def __init__(self, key: str):
         self.key = key
-        self.value = None
+        self.val = None
         self.type = None
 
-    def value(self, value):
+    def value(self, val):
         self.type = ConditionType.VALUE
-        self.value = value
+        self.val = val
         return self
 
     def max(self):
@@ -53,12 +53,12 @@ class Condition:
 
     def range(self, start, end):
         self.type = ConditionType.RANGE
-        self.value = [start, end]
+        self.val = [start, end]
         return self
 
     def array(self, array: Iterable):
         self.type = ConditionType.ARRAY
-        self.value = list(array)
+        self.val = list(array)
         return self
 
     def to_dict(self):
@@ -66,8 +66,8 @@ class Condition:
             "key": self.key,
             "type": str(self.type)
         }
-        if self.value:
-            d['value'] = self.value
+        if self.val:
+            d['value'] = self.val
         return d
 
 

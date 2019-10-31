@@ -23,12 +23,53 @@ class FilesList(list):
 class FileSet:
     @staticmethod
     def create_file_set(file_set_name: str,
-                        remote_file_list: Iterable):
-        """Create a file set on a list of remote files.
+                        remote_entities: Iterable) -> dict:
+        """Create a file set on a list of remote files or file sets.
+
+        Denoting a file is the same as anywhere else. Use "@" prefix to
+        denote file sets.
+
+        Examples:
+
+        1. Create file set from files
+
+        .. code-block::
+
+            create_file_set("my_new_file_set_name",
+                            ["/my_data/test.json", "/my_data/a/b.txt:3"])
+
+        2. Create file set from other file sets
+
+        .. code-block::
+
+            create_file_set("my_new_file_set_name",
+                            ["@file_set_a:1", "@file_set_b"])
+
+       3. You can also mix file and file sets
+
+       .. code-block::
+
+            create_file_set("my_new_file_set_name",
+                            ["@file_set_a:1",
+                             "/my_data/a/b.txt:3",
+                             "@file_set_c"]
+                            )
+
+
+        :return:
+
+            .. code-block:: text
+
+                {
+                  "id": "HotpotQA:1",
+                  "files": [
+                    "data/train.json:2"
+                  ]
+                }
         """
         data = {
             "name": file_set_name,
-            "files": list(remote_file_list)
+            "files": list(remote_entities)
         }
         return RestRequest(StorageApi.create_file_set) \
             .with_data(data) \

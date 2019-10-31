@@ -40,21 +40,24 @@ class JobStatus(Enum):
 class Job:
     """Run a job on the cloud.
 
-    Typical usage:
+    Typical usage (go to `example` folder for a sample workflow
+    on Jupyter notebook):
 
     .. code-block:: python
 
+        command = "mkdir -p ./my_output/ && " \
+                  "(cat Shakespeare/* | python3 wordcount.py ./my_output/)"
         attr = {
-            "v_cpu": "0.5",
-            "memory": "320Mi",
+            "v_cpu": "0.2",
+            "memory": "64Mi",
             "gpu": "0",
-            "command": "echo hello world from default job",
+            "command": command,
             "container_image": "pytorch/pytorch",
-            'input_file_set': 'sterling',
-            'output_path': 'outputlalapath',
-            'code': '/albertinputs/demo.zip',
-            'description': 'nothinghere',
-            'name': 'my test job'
+            'input_file_set': 'shakespeare.texts',
+            'output_path': './my_output/',
+            'code': '/wordcount.zip',
+            'description': 'count some words from Shakespeare works',
+            'name': 'my_acai_job'
         }
 
         Job().with_attributes(attr).register().run()
@@ -293,7 +296,7 @@ class Job:
 
         >>> status = Job.find(10).status()
 
-        :return: JobStatus Enum
+        :return: :class:`.JobStatus`
         """
         r = RestRequest(JobMonitorApi.job_status) \
             .with_query({'job_id': self.id}) \
@@ -302,7 +305,10 @@ class Job:
         return JobStatus.from_str(r['status'])
 
     def wait(self) -> JobStatus:
-        """Block until job finish or fail."""
+        """Block until job finish or fail.
+
+        :return: :class:`.JobStatus`
+        """
         while 1:
             status = self.status()
             if status in (JobStatus.FINISHED,
