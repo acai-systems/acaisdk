@@ -195,7 +195,7 @@ new projects.</p></li>
 
 <dl class="method">
 <dt id="acaisdk.project.Project.create_user">
-<em class="property">static </em><code class="sig-name descname">create_user</code><span class="sig-paren">(</span><em class="sig-param">project_id: str</em>, <em class="sig-param">admin_token: str</em>, <em class="sig-param">user: str</em><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#acaisdk.project.Project.create_user" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">create_user</code><span class="sig-paren">(</span><em class="sig-param">project_id: str</em>, <em class="sig-param">admin_token: str</em>, <em class="sig-param">user: str</em>, <em class="sig-param">login: bool = True</em><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#acaisdk.project.Project.create_user" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a new user for the project.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -203,6 +203,8 @@ new projects.</p></li>
 <li><p><strong>project_id</strong> – Project ID.</p></li>
 <li><p><strong>admin_token</strong> – Use the admin token you get from <a class="reference internal" href="#acaisdk.project.Project.create_project" title="acaisdk.project.Project.create_project"><code class="xref py py-meth docutils literal notranslate"><span class="pre">create_project()</span></code></a></p></li>
 <li><p><strong>user</strong> – Name for the new user.</p></li>
+<li><p><strong>login</strong> – By default, automatically export the env variable and
+load the new credential.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -222,6 +224,23 @@ new projects.</p></li>
 </div>
 <div class="section" id="module-acaisdk.credentials">
 <span id="credentials"></span><h2>Credentials<a class="headerlink" href="#module-acaisdk.credentials" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="acaisdk.credentials.login">
+<code class="sig-prename descclassname">acaisdk.credentials.</code><code class="sig-name descname">login</code><span class="sig-paren">(</span><em class="sig-param">token</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#acaisdk.credentials.login" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log in with a new token. ENV variable will be updated.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>token</strong> – user token.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="acaisdk.credentials.refresh">
+<code class="sig-prename descclassname">acaisdk.credentials.</code><code class="sig-name descname">refresh</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#acaisdk.credentials.refresh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Refresh credentials. Used when a new token is added to ENV.</p>
+</dd></dl>
+
 <dl class="class">
 <dt id="acaisdk.credentials.Credentials">
 <em class="property">class </em><code class="sig-prename descclassname">acaisdk.credentials.</code><code class="sig-name descname">Credentials</code><a class="headerlink" href="#acaisdk.credentials.Credentials" title="Permalink to this definition">¶</a></dt>
@@ -274,7 +293,7 @@ method to store a new set of credentials to file.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Credentials</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>  <span class="c1"># or implicitly load</span>
 </pre></div>
 </div>
-<p>Config file is formatted as:</p>
+<p>Credential file is formatted as:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[default]
 project_name = test_project
 
@@ -285,6 +304,7 @@ token = ************SD43
 token = ************3452
 </pre></div>
 </div>
+<p>Note: Writing to credential file is not tested. Use ENV to authenticate.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Credentials object</p>
@@ -380,7 +400,7 @@ downloaded to <cite>/home/ubuntu/stuff/c.json</cite></p>
 
 <dl class="method">
 <dt id="acaisdk.file.File.convert_to_file_mapping">
-<em class="property">static </em><code class="sig-name descname">convert_to_file_mapping</code><span class="sig-paren">(</span><em class="sig-param">local_paths: List[str], remote_path</em><span class="sig-paren">)</span> &#x2192; Tuple[acaisdk.fileset.FilesList, List[str]]<a class="headerlink" href="#acaisdk.file.File.convert_to_file_mapping" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">convert_to_file_mapping</code><span class="sig-paren">(</span><em class="sig-param">local_paths: List[str], remote_path: str, ignored_paths: List[str] = None</em><span class="sig-paren">)</span> &#x2192; Tuple[acaisdk.fileset.FilesList, List[str]]<a class="headerlink" href="#acaisdk.file.File.convert_to_file_mapping" title="Permalink to this definition">¶</a></dt>
 <dd><p>A nice method to make you happy.</p>
 <p>Converts local file and directory paths to their
 corresponding remote paths. So that you do not need to specify
@@ -464,8 +484,48 @@ itself from change of files in local directories.</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="acaisdk.fileset.FileSet.create_file_set">
-<em class="property">static </em><code class="sig-name descname">create_file_set</code><span class="sig-paren">(</span><em class="sig-param">file_set_name: str</em>, <em class="sig-param">remote_file_list: Iterable</em><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.fileset.FileSet.create_file_set" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a file set on a list of remote files.</p>
+<em class="property">static </em><code class="sig-name descname">create_file_set</code><span class="sig-paren">(</span><em class="sig-param">file_set_name: str</em>, <em class="sig-param">remote_entities: Iterable</em><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#acaisdk.fileset.FileSet.create_file_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a file set on a list of remote files or file sets.</p>
+<p>Denoting a file is the same as anywhere else. Use “&#64;” prefix to
+denote file sets.</p>
+<p>Examples:</p>
+<ol class="arabic simple">
+<li><p>Create file set from files</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">create_file_set</span><span class="p">(</span><span class="s2">&quot;my_new_file_set_name&quot;</span><span class="p">,</span>
+                <span class="p">[</span><span class="s2">&quot;/my_data/test.json&quot;</span><span class="p">,</span> <span class="s2">&quot;/my_data/a/b.txt:3&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Create file set from other file sets</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">create_file_set</span><span class="p">(</span><span class="s2">&quot;my_new_file_set_name&quot;</span><span class="p">,</span>
+                <span class="p">[</span><span class="s2">&quot;@file_set_a:1&quot;</span><span class="p">,</span> <span class="s2">&quot;@file_set_b&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>You can also mix file and file sets</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">create_file_set</span><span class="p">(</span><span class="s2">&quot;my_new_file_set_name&quot;</span><span class="p">,</span>
+                <span class="p">[</span><span class="s2">&quot;@file_set_a:1&quot;</span><span class="p">,</span>
+                 <span class="s2">&quot;/my_data/a/b.txt:3&quot;</span><span class="p">,</span>
+                 <span class="s2">&quot;@file_set_c&quot;</span><span class="p">]</span>
+                <span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{
+  &quot;id&quot;: &quot;HotpotQA:1&quot;,
+  &quot;files&quot;: [
+    &quot;data/train.json:2&quot;
+  ]
+}
+</pre></div>
+</div>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -535,18 +595,21 @@ continue to download.</p></li>
 <dt id="acaisdk.job.Job">
 <em class="property">class </em><code class="sig-prename descclassname">acaisdk.job.</code><code class="sig-name descname">Job</code><a class="headerlink" href="#acaisdk.job.Job" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run a job on the cloud.</p>
-<p>Typical usage:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">attr</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;v_cpu&quot;</span><span class="p">:</span> <span class="s2">&quot;0.5&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;memory&quot;</span><span class="p">:</span> <span class="s2">&quot;320Mi&quot;</span><span class="p">,</span>
+<p>Typical usage (go to <cite>example</cite> folder for a sample workflow
+on Jupyter notebook):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;mkdir -p ./my_output/ &amp;&amp; &quot;</span> \
+          <span class="s2">&quot;(cat Shakespeare/* | python3 wordcount.py ./my_output/)&quot;</span>
+<span class="n">attr</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;v_cpu&quot;</span><span class="p">:</span> <span class="s2">&quot;0.2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;memory&quot;</span><span class="p">:</span> <span class="s2">&quot;64Mi&quot;</span><span class="p">,</span>
     <span class="s2">&quot;gpu&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;command&quot;</span><span class="p">:</span> <span class="s2">&quot;echo hello world from default job&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;command&quot;</span><span class="p">:</span> <span class="n">command</span><span class="p">,</span>
     <span class="s2">&quot;container_image&quot;</span><span class="p">:</span> <span class="s2">&quot;pytorch/pytorch&quot;</span><span class="p">,</span>
-    <span class="s1">&#39;input_file_set&#39;</span><span class="p">:</span> <span class="s1">&#39;sterling&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;output_path&#39;</span><span class="p">:</span> <span class="s1">&#39;outputlalapath&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;code&#39;</span><span class="p">:</span> <span class="s1">&#39;/albertinputs/demo.zip&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;nothinghere&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;my test job&#39;</span>
+    <span class="s1">&#39;input_file_set&#39;</span><span class="p">:</span> <span class="s1">&#39;shakespeare.texts&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;output_path&#39;</span><span class="p">:</span> <span class="s1">&#39;./my_output/&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;code&#39;</span><span class="p">:</span> <span class="s1">&#39;/wordcount.zip&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;count some words from Shakespeare works&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;my_acai_job&#39;</span>
 <span class="p">}</span>
 
 <span class="n">Job</span><span class="p">()</span><span class="o">.</span><span class="n">with_attributes</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span><span class="o">.</span><span class="n">register</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
@@ -828,9 +891,7 @@ Same usage as <a class="reference internal" href="#acaisdk.meta.Meta.find_file" 
             &#39;my_meta_key1&#39;: &#39;my_meta_value_1&#39;,
             &#39;tags&#39;: [&#39;hotpot&#39;, &#39;cnn&#39;, ...]
            },
-           {
-            ...
-           },
+           { ... },
            ...
           ],
  &#39;status&#39;: &#39;success&#39;}
@@ -875,28 +936,35 @@ applying multiple Conditions.</p>
 “OR” logic is not supported.</p>
 <dl class="method">
 <dt id="acaisdk.meta.Condition.value">
-<code class="sig-name descname">value</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.meta.Condition.value" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname">value</code><span class="sig-paren">(</span><em class="sig-param">val</em><span class="sig-paren">)</span> &#x2192; acaisdk.meta.Condition<a class="headerlink" href="#acaisdk.meta.Condition.value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find entity with value equals <code class="code docutils literal notranslate"><span class="pre">val</span></code></p>
+</dd></dl>
 
 <dl class="method">
 <dt id="acaisdk.meta.Condition.max">
-<code class="sig-name descname">max</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.meta.Condition.max" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname">max</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; acaisdk.meta.Condition<a class="headerlink" href="#acaisdk.meta.Condition.max" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find entity with maximum value</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="acaisdk.meta.Condition.min">
-<code class="sig-name descname">min</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.meta.Condition.min" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname">min</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; acaisdk.meta.Condition<a class="headerlink" href="#acaisdk.meta.Condition.min" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find entity with minimum value</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="acaisdk.meta.Condition.range">
-<code class="sig-name descname">range</code><span class="sig-paren">(</span><em class="sig-param">start</em>, <em class="sig-param">end</em><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.meta.Condition.range" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname">range</code><span class="sig-paren">(</span><em class="sig-param">start</em>, <em class="sig-param">end</em><span class="sig-paren">)</span> &#x2192; acaisdk.meta.Condition<a class="headerlink" href="#acaisdk.meta.Condition.range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find entity with value ranging from <code class="code docutils literal notranslate"><span class="pre">start</span></code> (exclusive)
+to <code class="code docutils literal notranslate"><span class="pre">end</span></code> (inclusive)</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="acaisdk.meta.Condition.array">
-<code class="sig-name descname">array</code><span class="sig-paren">(</span><em class="sig-param">array: Iterable</em><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.meta.Condition.array" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname">array</code><span class="sig-paren">(</span><em class="sig-param">array: Iterable</em><span class="sig-paren">)</span> &#x2192; acaisdk.meta.Condition<a class="headerlink" href="#acaisdk.meta.Condition.array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find entity with values matching every value in the input array.
+Which implies that the metadata value must be of array type.</p>
+</dd></dl>
 
 </dd></dl>
 
