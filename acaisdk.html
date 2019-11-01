@@ -227,7 +227,8 @@ load the new credential.</p></li>
 <dl class="function">
 <dt id="acaisdk.credentials.login">
 <code class="sig-prename descclassname">acaisdk.credentials.</code><code class="sig-name descname">login</code><span class="sig-paren">(</span><em class="sig-param">token</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#acaisdk.credentials.login" title="Permalink to this definition">¶</a></dt>
-<dd><p>Log in with a new token. ENV variable will be updated.</p>
+<dd><p>Log in with a new token. ENV variable will be automatically updated.
+<a class="reference internal" href="#acaisdk.credentials.refresh" title="acaisdk.credentials.refresh"><code class="xref py py-meth docutils literal notranslate"><span class="pre">refresh()</span></code></a> is called by default.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>token</strong> – user token.</p>
@@ -238,7 +239,7 @@ load the new credential.</p></li>
 <dl class="function">
 <dt id="acaisdk.credentials.refresh">
 <code class="sig-prename descclassname">acaisdk.credentials.</code><code class="sig-name descname">refresh</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#acaisdk.credentials.refresh" title="Permalink to this definition">¶</a></dt>
-<dd><p>Refresh credentials. Used when a new token is added to ENV.</p>
+<dd><p>Refresh credentials. Used when a new token is manually added to ENV.</p>
 </dd></dl>
 
 <dl class="class">
