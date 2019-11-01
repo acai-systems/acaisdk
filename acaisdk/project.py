@@ -1,5 +1,5 @@
 from acaisdk.services.api_calls import *
-
+from acaisdk import credentials
 
 class Project:
     @staticmethod
@@ -41,7 +41,8 @@ class Project:
     @staticmethod
     def create_user(project_id: str,
                     admin_token: str,
-                    user: str) -> dict:
+                    user: str,
+                    login: bool = True) -> dict:
         """Create a new user for the project.
 
         :param project_id:
@@ -50,6 +51,9 @@ class Project:
             Use the admin token you get from :py:meth:`~Project.create_project`
         :param user:
             Name for the new user.
+        :param login:
+            By default, automatically export the env variable and
+            load the new credential.
         :return:
 
             .. code-block::
@@ -60,8 +64,12 @@ class Project:
                 }
         """
         # Admin could be global or project admin
-        return RestRequest(CredentialApi.create_user) \
+        r = RestRequest(CredentialApi.create_user) \
             .with_data({'project_id': project_id,
                         'admin_token': admin_token,
                         "user_name": user}) \
             .run()
+        if login:
+            credentials.login(r['user_token'])
+            debug("Logged in with token {}".format(r['user_token']))
+        return r

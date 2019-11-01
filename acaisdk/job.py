@@ -45,7 +45,7 @@ class Job:
 
     .. code-block:: python
 
-        command = "mkdir -p ./my_output/ && " \
+        command = "mkdir -p ./my_output/ && " \\
                   "(cat Shakespeare/* | python3 wordcount.py ./my_output/)"
         attr = {
             "v_cpu": "0.2",
@@ -302,7 +302,8 @@ class Job:
             .with_query({'job_id': self.id}) \
             .with_credentials() \
             .run()
-        return JobStatus.from_str(r['status'])
+        print(r)
+        return JobStatus.from_str(r['job_status'])
 
     def wait(self) -> JobStatus:
         """Block until job finish or fail.

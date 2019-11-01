@@ -126,8 +126,9 @@ class File:
 
     @staticmethod
     def convert_to_file_mapping(local_paths: List[str],
-                                remote_path) -> Tuple['fileset.FilesList',
-                                                      List[str]]:
+                                remote_path: str,
+                                ignored_paths: List[str] = None
+                                ) -> Tuple['fileset.FilesList', List[str]]:
         """A nice method to make you happy.
 
         Converts local file and directory paths to their
@@ -215,6 +216,9 @@ class File:
                 l_r_mapping.append((path, r))
             else:
                 all_ignores.append(path)
+
+        if ignored_paths is not None:
+            ignored_paths += all_ignores
 
         return l_r_mapping, all_ignores
 

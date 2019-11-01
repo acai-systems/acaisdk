@@ -45,9 +45,9 @@ class FileSet:
             create_file_set("my_new_file_set_name",
                             ["@file_set_a:1", "@file_set_b"])
 
-       3. You can also mix file and file sets
+        3. You can also mix file and file sets
 
-       .. code-block::
+        .. code-block::
 
             create_file_set("my_new_file_set_name",
                             ["@file_set_a:1",

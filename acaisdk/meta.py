@@ -38,25 +38,37 @@ class Condition:
         self.val = None
         self.type = None
 
-    def value(self, val):
+    def value(self, val) -> 'Condition':
+        """Find entity with value equals :code:`val`
+        """
         self.type = ConditionType.VALUE
         self.val = val
         return self
 
-    def max(self):
+    def max(self) -> 'Condition':
+        """Find entity with maximum value
+        """
         self.type = ConditionType.MAX
         return self
 
-    def min(self):
+    def min(self) -> 'Condition':
+        """Find entity with minimum value
+        """
         self.type = ConditionType.MIN
         return self
 
-    def range(self, start, end):
+    def range(self, start, end) -> 'Condition':
+        """Find entity with value ranging from :code:`start` (exclusive)
+         to :code:`end` (inclusive)
+        """
         self.type = ConditionType.RANGE
         self.val = [start, end]
         return self
 
-    def array(self, array: Iterable):
+    def array(self, array: Iterable) -> 'Condition':
+        """Find entity with values matching every value in the input array.
+        Which implies that the metadata value must be of array type.
+        """
         self.type = ConditionType.ARRAY
         self.val = list(array)
         return self
@@ -219,9 +231,7 @@ class Meta:
                             'my_meta_key1': 'my_meta_value_1',
                             'tags': ['hotpot', 'cnn', ...]
                            },
-                           {
-                            ...
-                           },
+                           { ... },
                            ...
                           ],
                  'status': 'success'}

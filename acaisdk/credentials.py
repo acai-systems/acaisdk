@@ -8,15 +8,30 @@ LOCAL_CRED_PATH = os.path.join(os.path.expanduser('~'),
 CREDENTIALS = None
 
 
-def get_credentials() -> dict:
+def login(token) -> None:
+    """Log in with a new token. ENV variable will be updated.
+
+    :param token: user token.
+    """
+    os.environ.update({'ACAI_TOKEN': token})
+    refresh()
+
+
+def refresh() -> None:
+    """Refresh credentials. Used when a new token is added to ENV.
+    """
+    Credentials.load()
+
+
+def get_credentials(force=False) -> dict:
     """Returns credentials as a dictionary for REST requests.
 
     The function also lazily loads credentials upon invocation.
 
-    Again, user do not need to use this method.
+    User do not need to use this method.
     """
     global CREDENTIALS
-    if not CREDENTIALS:
+    if not CREDENTIALS or force:
         Credentials.load()
     return CREDENTIALS._to_dict()
 
@@ -39,6 +54,7 @@ class Credentials(object):
     >>> os.environ['ACAI_PROJECT'] = 'MyAwesomeProject'
     >>> os.environ['ACAI_TOKEN'] = '***************D8S6'
     """
+
     def __init__(self):
         global CREDENTIALS
         self.project_id = ''
@@ -103,7 +119,7 @@ class Credentials(object):
         >>> Credentials.configure('my_project', '****PROJECT_TOKEN****')
         >>> Credentials.load()  # or implicitly load
 
-        Config file is formatted as:
+        Credential file is formatted as:
 
         .. code-block:: text
 
@@ -115,6 +131,8 @@ class Credentials(object):
 
             [dummy_project]
             token = ************3452
+
+        Note: Writing to credential file is not tested. Use ENV to authenticate.
 
         :return: Credentials object
         """
