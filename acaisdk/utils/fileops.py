@@ -18,17 +18,19 @@ class FileIO:
         file_object = open(self.file_path, 'rb')
         pid = os.fork()
         if pid == 0:
-            prev_pos = 0
-            with tqdm(total=self.file_size,
-                      unit='B', unit_scale=True, unit_divisor=1024,
-                      ascii=True, disable=not utils.IS_CLI) as p_bar:
-                while 1:
-                    offset = file_object.tell()
-                    p_bar.update((offset - prev_pos))
-                    prev_pos = offset
-                    if offset >= self.file_size:
-                        break
-            os._exit(0)
+            try:
+                prev_pos = 0
+                with tqdm(total=self.file_size,
+                          unit='B', unit_scale=True, unit_divisor=1024,
+                          ascii=True, disable=not utils.IS_CLI) as p_bar:
+                    while 1:
+                        offset = file_object.tell()
+                        p_bar.update((offset - prev_pos))
+                        prev_pos = offset
+                        if offset >= self.file_size:
+                            break
+            finally:
+                os._exit(0)
 
         headers = {'Content-Type': 'application/binary'}
         try:

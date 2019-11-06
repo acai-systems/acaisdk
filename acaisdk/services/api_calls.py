@@ -55,12 +55,18 @@ class CredentialApi(Services):
 
 
 class StorageApi(Services):
-    # File system
+    # File system, deprecated
     list_directory = EnumFactory.GET()
     make_directory = EnumFactory.POST()
     upload_file = EnumFactory.POST()
     download_file = EnumFactory.GET()
     list_file_versions = EnumFactory.GET()
+
+    # File system v2
+    start_file_upload_session = EnumFactory.POST()
+    poll_file_upload_session = EnumFactory.GET()
+    finish_file_upload_session = EnumFactory.POST()
+    abort_file_upload_session = EnumFactory.POST()
 
     # File Set
     create_file_set = EnumFactory.POST()

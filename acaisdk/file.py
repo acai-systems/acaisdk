@@ -5,6 +5,7 @@ from acaisdk import fileset
 from acaisdk.utils import utils
 import os
 import glob
+import time
 
 
 class File:
@@ -67,21 +68,45 @@ class File:
         l_r_mapping = local_to_remote
         if type(local_to_remote) == dict:
             l_r_mapping = local_to_remote.items()
+        l_r_mapping = list(l_r_mapping)  # make sure it is sorted
 
-        versioned_mapping = fileset.FilesList()
-        print(l_r_mapping)
-        for local_path, remote_path in l_r_mapping:
-            r = File._get_upload_link(remote_path)
-            s3_url, file_id = r['s3_url'], r['id']
-            if utils.IS_CLI:
-                print('Uploading file {} to {}'
-                      ''.format(local_path, remote_path))
+        remote_paths = [r for _, r in l_r_mapping]
+
+        r = RestRequest(StorageApi.start_file_upload_session) \
+            .with_data({'paths': remote_paths}) \
+            .with_credentials() \
+            .run()
+        session_id = r['session_id']
+
+        debug(l_r_mapping)
+        for i, (local_path, remote_path) in enumerate(l_r_mapping):
+            s3_url = r['files'][i]['s3_url']
             FileIO(local_path).upload(s3_url)
             debug('uploaded to {}'.format(s3_url))
-            versioned_mapping.append((local_path, file_id))
+
+        while 1:
+            r = RestRequest(StorageApi.poll_file_upload_session) \
+                .with_query({'session_id': session_id}) \
+                .with_credentials() \
+                .run()
+            if r['committed']:
+                versioned_remote_paths = r['uploaded_file_ids']
+                break
+            time.sleep(1)
+
+        # Finish session
+        r = RestRequest(StorageApi.finish_file_upload_session) \
+            .with_data({'session_id': session_id}) \
+            .with_credentials() \
+            .run()
+
+        versioned_mapping = fileset.FilesList(
+            [(l, vr) for (l, _), vr in zip(l_r_mapping, versioned_remote_paths)]
+        )
 
         if results:
             results += versioned_mapping
+
         return versioned_mapping
 
     @staticmethod
@@ -211,8 +236,7 @@ class File:
 
             path = local_paths[0]
             if os.access(path, os.R_OK):
-                r = os.path.join(remote_path,
-                                 os.path.basename(path))
+                r = os.path.join(remote_path)
                 l_r_mapping.append((path, r))
             else:
                 all_ignores.append(path)
@@ -228,6 +252,7 @@ class File:
             return True
         if os.path.exists(path) and os.path.isdir(path):
             return True
+        return False
 
     @staticmethod
     def _list_all_files(dir_path):

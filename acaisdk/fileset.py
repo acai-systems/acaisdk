@@ -23,7 +23,7 @@ class FilesList(list):
 class FileSet:
     @staticmethod
     def create_file_set(file_set_name: str,
-                        remote_entities: Iterable) -> dict:
+                        remote_entities: list) -> dict:
         """Create a file set on a list of remote files or file sets.
 
         Denoting a file is the same as anywhere else. Use "@" prefix to
@@ -67,6 +67,13 @@ class FileSet:
                   ]
                 }
         """
+        if ':' in file_set_name:
+            _msg = 'Do not create file set with ":" in its name.'
+            raise AcaiException(_msg)
+        if type(remote_entities) not in (tuple, list):
+            _msg = 'Need a list or tuple of remote entities ' \
+                   'instead of {}.'.format(type(remote_entities))
+            raise AcaiException(_msg)
         data = {
             "name": file_set_name,
             "files": list(remote_entities)

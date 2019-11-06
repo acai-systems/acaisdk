@@ -9,7 +9,8 @@ CREDENTIALS = None
 
 
 def login(token) -> None:
-    """Log in with a new token. ENV variable will be updated.
+    """Log in with a new token. ENV variable will be automatically updated.
+    :py:meth:`refresh()` is called by default.
 
     :param token: user token.
     """
@@ -18,7 +19,7 @@ def login(token) -> None:
 
 
 def refresh() -> None:
-    """Refresh credentials. Used when a new token is added to ENV.
+    """Refresh credentials. Used when a new token is manually added to ENV.
     """
     Credentials.load()
 
