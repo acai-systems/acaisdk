@@ -135,6 +135,7 @@ class Job:
         'memory',
         'registered',
         'submitted',
+        'job_status',
     ]
     _required_fields = [
         'name',
@@ -148,8 +149,10 @@ class Job:
         'gpu',
         'memory',
     ]
-    _blacklist_fields = [
-        'id',
+    _blacklist_fields_print = [
+
+    ]
+    _blacklist_fields_submit = [
         'output_file_set',
         'updated_time',
         'registered',
@@ -160,6 +163,7 @@ class Job:
         self.registered = False
         self.submitted = False
         self.v_cpu, self.gpu, self.memory = '0.5', '512Mi', '0'
+        self.job_status = None
 
     def register(self):
         """Register the job with ACAI backend. Only registered job can be run.
@@ -167,8 +171,12 @@ class Job:
         if self.registered:
             raise AcaiException('Job already registered')
         self._validate()
+
+        data = {k: v for k, v in self.dict.items()
+                if k not in self._blacklist_fields_submit}
+
         r = RestRequest(JobRegistryApi.new_job) \
-            .with_data(self.dict) \
+            .with_data(data) \
             .with_credentials() \
             .run()
         self.with_attributes(r)
@@ -270,7 +278,8 @@ class Job:
         j = Job()
         j.id = job_id
         j.registered = True
-        return j.with_attributes(j._info())
+        j.with_attributes(j._info())
+        return j
 
     def _info(self):
         return RestRequest(JobRegistryApi.job) \
@@ -296,17 +305,46 @@ class Job:
 
         >>> status = Job.find(10).status()
 
+        In the mean time, output file set is updated. But it will
+        only be meaningful when the job is successfully finished. You can
+        then access it by
+
+        >>> j = Job.find(123).status()
+        >>> output_file_set = j.output_file_set
+
         :return: :class:`.JobStatus`
         """
         r = RestRequest(JobMonitorApi.job_status) \
             .with_query({'job_id': self.id}) \
             .with_credentials() \
             .run()
-        print(r)
-        return JobStatus.from_str(r['job_status'])
+        self.output_file_set = r['output_file_set']
+        self.job_status = JobStatus.from_str(r['job_status'])
+        return self.job_status
+
+    def get_output_file_set(self):
+        """Get the output file set of the job.
+
+        Notice that this method is only safe when the job in question is
+        submitted and finished. Otherwise it may raise exception.
+
+        The return value only makes sense when the job is successfully
+        finished.
+        """
+        self.status()
+        return self.output_file_set
 
     def wait(self) -> JobStatus:
         """Block until job finish or fail.
+
+        By the way, as wait finishes, the output file set will
+        become available.
+
+        example:
+
+        >>> j = Job.with_attributes({...}).register().run()
+        >>> if j.wait() == JobStatus.FINISHED:
+        >>>     print(j.output_file_set)
 
         :return: :class:`.JobStatus`
         """
@@ -338,7 +376,7 @@ class Job:
         """
         r = OrderedDict()
         [r.update({s: getattr(self, s)}) for s in self.__slots__
-         if hasattr(self, s) and s not in self._blacklist_fields]
+         if hasattr(self, s) and s not in self._blacklist_fields_print]
         return r
 
     @staticmethod
