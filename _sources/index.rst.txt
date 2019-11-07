@@ -6,6 +6,10 @@
 Welcome to acaisdk's documentation!
 ===================================
 
+GitHub Page: `Acai SDK <https://github.com/acai-systems/acaisdk>`_
+
+Job Dashboard: `Acai Dashboard <http://104.196.197.41>`_
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
