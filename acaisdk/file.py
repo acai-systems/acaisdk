@@ -82,7 +82,7 @@ class File:
         for i, (local_path, remote_path) in enumerate(l_r_mapping):
             s3_url = r['files'][i]['s3_url']
             FileIO(local_path).upload(s3_url)
-            debug('uploaded to {}'.format(s3_url))
+            debug('uploaded {} to {}'.format(local_path, remote_path))
 
         while 1:
             r = RestRequest(StorageApi.poll_file_upload_session) \
