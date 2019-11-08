@@ -82,6 +82,10 @@ class Condition:
             d['value'] = self.val
         return d
 
+    def __repr__(self):
+        return '{{type: {}, key: {}, val: {}}}'.format(
+            self.type, self.key, self.val)
+
 
 class Meta:
     # === UPDATE ===

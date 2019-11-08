@@ -3,6 +3,7 @@ import yaml
 from acaisdk.utils.exceptions import *
 from collections import OrderedDict
 from acaisdk.services.api_calls import *
+from acaisdk.fileset import FileSet
 from typing import Union, Tuple, List, Dict
 from pprint import pformat
 import time
@@ -153,7 +154,6 @@ class Job:
 
     ]
     _blacklist_fields_submit = [
-        'output_file_set',
         'updated_time',
         'registered',
         'submitted'
@@ -171,6 +171,10 @@ class Job:
         if self.registered:
             raise AcaiException('Job already registered')
         self._validate()
+
+        # use full id of input file set
+        self.input_file_set = \
+            FileSet.list_file_set_content(self.input_file_set)['id']
 
         data = {k: v for k, v in self.dict.items()
                 if k not in self._blacklist_fields_submit}
@@ -356,6 +360,7 @@ class Job:
                           JobStatus.CONTAINER_CRASHED,
                           JobStatus.UNKNOWN):
                 break
+            debug('Current status: {}'.format(status))
             time.sleep(10)
         return status
 
