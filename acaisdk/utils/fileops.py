@@ -1,4 +1,5 @@
 import os
+import signal
 from tqdm import tqdm
 from acaisdk.utils.rest_utils import get_session
 from acaisdk.utils import utils
@@ -36,9 +37,15 @@ class FileIO:
         try:
             r = get_session().put(presigned_link, data=file_object,
                                   headers=headers)
+            if file_object.tell() == 0:
+                # Hack, somehow S3 presigned url upload does not recognize
+                # fd for an empty file but can upload with data=None.
+                r = get_session().put(presigned_link, data=None,
+                                      headers=headers)
             return r
         finally:
             file_object.close()
+            os.kill(pid, signal.SIGKILL)
 
     @staticmethod
     def download(presigned_link: str,

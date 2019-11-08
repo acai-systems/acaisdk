@@ -65,16 +65,12 @@ class File:
 
                 [("local_path", "remote_path:version"), ...]
         """
-
-        print("in", flush=True)
         l_r_mapping = local_to_remote
         if type(local_to_remote) == dict:
             l_r_mapping = local_to_remote.items()
-        l_r_mapping = list(l_r_mapping)  # make sure it is sorted
+        l_r_mapping = list(l_r_mapping)  # make sure it is ordered
 
         remote_paths = [r for _, r in l_r_mapping]
-
-        print("start session", flush=True)
 
         r = RestRequest(StorageApi.start_file_upload_session) \
             .with_data({'paths': remote_paths}) \
@@ -83,25 +79,21 @@ class File:
         session_id = r['session_id']
 
         debug(l_r_mapping)
-        print("start download", flush=True)
         for i, (local_path, remote_path) in enumerate(l_r_mapping):
             s3_url = r['files'][i]['s3_url']
             FileIO(local_path).upload(s3_url)
             debug('uploaded {} to {}'.format(local_path, remote_path))
 
-        print("poll session", flush=True)
         while 1:
             r = RestRequest(StorageApi.poll_file_upload_session) \
                 .with_query({'session_id': session_id}) \
                 .with_credentials() \
                 .run()
-            print(r, flush=True)
             if r['committed']:
                 versioned_remote_paths = r['uploaded_file_ids']
                 break
             time.sleep(1)
 
-        print("finish session", flush=True)
         # Finish session
         r = RestRequest(StorageApi.finish_file_upload_session) \
             .with_data({'session_id': session_id}) \
@@ -114,7 +106,7 @@ class File:
 
         if results:
             results += versioned_mapping
-        print("i'm out", flush=True)
+
         return versioned_mapping
 
     @staticmethod
