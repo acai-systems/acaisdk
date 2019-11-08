@@ -95,6 +95,7 @@ class File:
                 .with_query({'session_id': session_id}) \
                 .with_credentials() \
                 .run()
+            print(r, flush=True)
             if r['committed']:
                 versioned_remote_paths = r['uploaded_file_ids']
                 break
