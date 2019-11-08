@@ -93,7 +93,7 @@ class File:
                 versioned_remote_paths = r['uploaded_file_ids']
                 break
             time.sleep(1)
-        print("VERSIONED:", versioned_remote_paths)
+
         # Finish session
         r = RestRequest(StorageApi.finish_file_upload_session) \
             .with_data({'session_id': session_id}) \
