@@ -34,7 +34,8 @@
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Welcome to acaisdk’s documentation!" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -78,19 +79,19 @@
               
             
             
-              <!-- Local TOC -->
-              <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">ACAI SDK</a><ul>
-<li><a class="reference internal" href="#module-acaisdk.project">Project</a></li>
-<li><a class="reference internal" href="#module-acaisdk.credentials">Credentials</a></li>
-<li><a class="reference internal" href="#module-acaisdk.file">File</a></li>
-<li><a class="reference internal" href="#module-acaisdk.fileset">File Set</a></li>
-<li><a class="reference internal" href="#module-acaisdk.job">Job</a></li>
-<li><a class="reference internal" href="#module-acaisdk.meta">Metadata</a></li>
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">ACAI SDK</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-acaisdk.project">Project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-acaisdk.credentials">Credentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-acaisdk.file">File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-acaisdk.fileset">File Set</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-acaisdk.job">Job</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-acaisdk.meta">Metadata</a></li>
 </ul>
 </li>
 </ul>
-</div>
+
             
           
         </div>
@@ -398,9 +399,31 @@ downloaded to <cite>/home/ubuntu/stuff/c.json</cite></p>
 </dl>
 </dd></dl>
 
+<dl class="class">
+<dt id="acaisdk.file.File.UploadFileMapping">
+<em class="property">class </em><code class="sig-name descname">UploadFileMapping</code><a class="headerlink" href="#acaisdk.file.File.UploadFileMapping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<p>Field number 0: A <a class="reference internal" href="#acaisdk.fileset.FilesList" title="acaisdk.fileset.FilesList"><code class="xref py py-class docutils literal notranslate"><span class="pre">fileset.FilesList</span></code></a> for successfully
+mapped paths.</p>
+<p>Field number 1: A list of files that are not accessible.
+(no permission, maybe).</p>
+<dl class="method">
+<dt id="acaisdk.file.File.UploadFileMapping.files_to_upload">
+<em class="property">property </em><code class="sig-name descname">files_to_upload</code><a class="headerlink" href="#acaisdk.file.File.UploadFileMapping.files_to_upload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="acaisdk.file.File.UploadFileMapping.files_ignored">
+<em class="property">property </em><code class="sig-name descname">files_ignored</code><a class="headerlink" href="#acaisdk.file.File.UploadFileMapping.files_ignored" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="method">
 <dt id="acaisdk.file.File.convert_to_file_mapping">
-<em class="property">static </em><code class="sig-name descname">convert_to_file_mapping</code><span class="sig-paren">(</span><em class="sig-param">local_paths: List[str], remote_path: str, ignored_paths: List[str] = None</em><span class="sig-paren">)</span> &#x2192; Tuple[acaisdk.fileset.FilesList, List[str]]<a class="headerlink" href="#acaisdk.file.File.convert_to_file_mapping" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">convert_to_file_mapping</code><span class="sig-paren">(</span><em class="sig-param">local_paths: List[str], remote_path: str, ignored_paths: List[str] = None</em><span class="sig-paren">)</span> &#x2192; acaisdk.file.UploadFileMapping<a class="headerlink" href="#acaisdk.file.File.convert_to_file_mapping" title="Permalink to this definition">¶</a></dt>
 <dd><p>A nice method to make you happy.</p>
 <p>Converts local file and directory paths to their
 corresponding remote paths. So that you do not need to specify
@@ -425,7 +448,8 @@ local to remote path mappings one by one for the <cite>upload</cite> function.</
 added at the end of the path string, like <cite>“/allen/”</cite> instead of
 <cite>“/allen”</cite>.</p>
 <p>Example usage:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">File</span><span class="o">.</span><span class="n">convert_to_file_mapping</span><span class="p">([</span><span class="s1">&#39;/a/b/c/&#39;</span><span class="p">],</span> <span class="s1">&#39;/allen/&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> \
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">File</span><span class="o">.</span><span class="n">convert_to_file_mapping</span><span class="p">([</span><span class="s1">&#39;/a/b/c/&#39;</span><span class="p">],</span> <span class="s1">&#39;/allen/&#39;</span><span class="p">)</span> \
+    <span class="o">.</span><span class="n">files_to_upload</span> \
     <span class="o">.</span><span class="n">upload</span><span class="p">()</span> \
     <span class="o">.</span><span class="n">as_new_file_set</span><span class="p">(</span><span class="s1">&#39;my_training_files&#39;</span><span class="p">)</span>
 </pre></div>
@@ -434,11 +458,7 @@ added at the end of the path string, like <cite>“/allen/”</cite> instead of
 itself from change of files in local directories.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><ul class="simple">
-<li><p>A FileList for successfully mapped paths.</p></li>
-<li><p>A list of files that are not accessible.</p></li>
-</ul>
-</p>
+<dd class="field-odd"><p><a class="reference internal" href="#acaisdk.file.File.UploadFileMapping" title="acaisdk.file.File.UploadFileMapping"><code class="xref py py-class docutils literal notranslate"><span class="pre">File.UploadFileMapping</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1001,6 +1021,13 @@ Which implies that the metadata value must be of array type.</p>
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to acaisdk’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>

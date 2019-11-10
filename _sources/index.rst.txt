@@ -8,6 +8,8 @@ Welcome to acaisdk's documentation!
 
 GitHub Page: `Acai SDK <https://github.com/acai-systems/acaisdk>`_
 
+Video Demo: `YouTube <https://youtu.be/kscKthjU8oQ>`_
+
 Job Dashboard: `Acai Dashboard <http://104.196.197.41>`_
 
 .. toctree::
