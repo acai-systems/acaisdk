@@ -3,8 +3,12 @@
 Notice that **Python3** is required.
 ```bash
 git clone https://github.com/acai-systems/acaisdk.git
-cd acaisdk/acaisdk/
-pip3 install -r requirements.txt
+cd acaisdk/
+pip3 install .
+
+# If not sure which Python executable pip3 is linked with, 
+# alternatively, you can do 
+python3 -m pip install .
 ```
 
 ## Run an Example

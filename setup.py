@@ -1,4 +1,21 @@
+import os
 from setuptools import setup, find_packages
+
+
+
+
+def parse_requirements():
+    requirements = []
+    r_file = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                          'acaisdk/requirements.txt')
+    with open(r_file) as f:
+        for l in f:
+            if l.strip():
+                requirements.append(l.strip())
+
+    requirements.append('acaisdk')
+    return requirements
+
 
 setup(name='acaisdk',
       version='0.1',
@@ -9,4 +26,5 @@ setup(name='acaisdk',
       license='MIT',
       packages=find_packages(),
       include_package_data=True,
+      install_requires=parse_requirements(),
       zip_safe=True)
