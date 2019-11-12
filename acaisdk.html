@@ -242,6 +242,14 @@ load the new credential.</p></li>
 <dd><p>Refresh credentials. Used when a new token is manually added to ENV.</p>
 </dd></dl>
 
+<dl class="function">
+<dt id="acaisdk.credentials.has_logged_in">
+<code class="sig-prename descclassname">acaisdk.credentials.</code><code class="sig-name descname">has_logged_in</code><span class="sig-paren">(</span><em class="sig-param">token_dict</em><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.credentials.has_logged_in" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines if user has provided credentials.</p>
+<p>This method is only a basic check, it does not mean that the credential
+is valid.</p>
+</dd></dl>
+
 <dl class="class">
 <dt id="acaisdk.credentials.Credentials">
 <em class="property">class </em><code class="sig-prename descclassname">acaisdk.credentials.</code><code class="sig-name descname">Credentials</code><a class="headerlink" href="#acaisdk.credentials.Credentials" title="Permalink to this definition">¶</a></dt>
@@ -967,7 +975,7 @@ Same usage as <a class="reference internal" href="#acaisdk.meta.Meta.find_file" 
 <dl class="class">
 <dt id="acaisdk.meta.Condition">
 <em class="property">class </em><code class="sig-prename descclassname">acaisdk.meta.</code><code class="sig-name descname">Condition</code><span class="sig-paren">(</span><em class="sig-param">key: str</em><span class="sig-paren">)</span><a class="headerlink" href="#acaisdk.meta.Condition" title="Permalink to this definition">¶</a></dt>
-<dd><p>Constrains to apply when filtering out jobs, files and
+<dd><p>Constraints to apply when filtering out jobs, files and
 file sets.</p>
 <p>Example: find the job output of the best performing CNN model by
 applying multiple Conditions.</p>
@@ -1005,10 +1013,13 @@ to <code class="code docutils literal notranslate"><span class="pre">end</span><
 </dd></dl>
 
 <dl class="method">
-<dt id="acaisdk.meta.Condition.array">
-<code class="sig-name descname">array</code><span class="sig-paren">(</span><em class="sig-param">array: Iterable</em><span class="sig-paren">)</span> &#x2192; acaisdk.meta.Condition<a class="headerlink" href="#acaisdk.meta.Condition.array" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find entity with values matching every value in the input array.
-Which implies that the metadata value must be of array type.</p>
+<dt id="acaisdk.meta.Condition.re">
+<code class="sig-name descname">re</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; acaisdk.meta.Condition<a class="headerlink" href="#acaisdk.meta.Condition.re" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query with a regular expression instead of exact string mapping.</p>
+<p>Only effective when the condition type is “value” and value is string.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Condition</span><span class="p">(</span><span class="s1">&#39;model&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s1">&#39;cnn&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">re</span><span class="p">()</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </dd></dl>
