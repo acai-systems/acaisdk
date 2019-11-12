@@ -37,6 +37,15 @@ def get_credentials(force=False) -> dict:
     return CREDENTIALS._to_dict()
 
 
+def has_logged_in(token_dict):
+    """Determines if user has provided credentials.
+
+    This method is only a basic check, it does not mean that the credential
+    is valid.
+    """
+    return len(token_dict['token']) > 0
+
+
 class Credentials(object):
     """
     Almost all interactions between user and the ACAI backend requires a token

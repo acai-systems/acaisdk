@@ -1,0 +1,5 @@
+include acaisdk/configs.ini
+recursive-exclude acaisdk *__pycache__
+recursive-exclude acaisdk *.pyc
+recursive-exclude acaisdk *.pyo
+recursive-exclude acaisdk *.orig
