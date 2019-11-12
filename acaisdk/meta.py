@@ -16,7 +16,7 @@ class ConditionType(Enum):
 
 
 class Condition:
-    """Constrains to apply when filtering out jobs, files and
+    """Constraints to apply when filtering out jobs, files and
     file sets.
 
     Example: find the job output of the best performing CNN model by
@@ -37,6 +37,7 @@ class Condition:
         self.key = key
         self.val = None
         self.type = None
+        self.is_regex = False
 
     def value(self, val) -> 'Condition':
         """Find entity with value equals :code:`val`
@@ -65,12 +66,18 @@ class Condition:
         self.val = [start, end]
         return self
 
-    def array(self, array: Iterable) -> 'Condition':
-        """Find entity with values matching every value in the input array.
-        Which implies that the metadata value must be of array type.
+    def re(self) -> 'Condition':
+        """Query with a regular expression instead of exact string mapping.
+
+        Only effective when the condition type is "value" and value is string.
+
+        .. code-block:: python
+
+            Condition('model').value('cnn').re()
+
         """
-        self.type = ConditionType.ARRAY
-        self.val = list(array)
+        if self.type == ConditionType.VALUE and type(self.val) == str:
+            self.is_regex = True
         return self
 
     def to_dict(self):
@@ -80,6 +87,8 @@ class Condition:
         }
         if self.val:
             d['value'] = self.val
+        if self.is_regex:
+            d['re'] = self.is_regex
         return d
 
     def __repr__(self):
@@ -201,6 +210,9 @@ class Meta:
         if entity_type.lower() not in ('file', 'job', 'fileset'):
             raise AcaiException('Entity type must be one of: '
                                 '("File", "Job", "FileSet")')
+
+        Meta._validate_query(*conditions)
+
         data = {
             "entity_type": entity_type.lower(),
             "conditions": [c.to_dict() for c in conditions]
@@ -209,6 +221,33 @@ class Meta:
             .with_data(data) \
             .with_credentials() \
             .run()
+
+    @staticmethod
+    def _validate_query(*conditions: Condition):
+        max_count = 0
+        min_count = 0
+        keys = set()
+        for c in conditions:
+            # No duplicate keys
+            if c.key not in keys:
+                keys.add(c.key)
+            else:
+                _msg = 'Duplicated search key: {}'.format(c.key)
+                raise AcaiException(_msg)
+
+            # Type-specific requirements.
+            if c.type == ConditionType.MIN:
+                min_count += 1
+            elif c.type == ConditionType.MAX:
+                max_count += 1
+            elif c.type == ConditionType.RANGE:
+                if (type(c.val[0]) not in (int, float) or
+                        type(c.val[1]) not in (int, float)):
+                    _msg = 'Range query start and end value must be numbers'
+                    raise AcaiException(_msg)
+        if max_count * min_count != 0:
+            _msg = 'Cannot specify max and min at the same time.'
+            raise AcaiException(_msg)
 
     @staticmethod
     def get_file_meta(*file_list):

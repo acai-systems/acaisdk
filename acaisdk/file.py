@@ -1,11 +1,12 @@
 from acaisdk.services.api_calls import *
 from acaisdk.utils.fileops import FileIO
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Tuple, Union, NamedTuple
 from acaisdk import fileset
 from acaisdk.utils import utils
 import os
 import glob
 import time
+from collections import namedtuple
 
 
 class File:
@@ -65,13 +66,14 @@ class File:
 
                 [("local_path", "remote_path:version"), ...]
         """
+        # No matter the format, convert to List[(local, remote), ...]
         l_r_mapping = local_to_remote
         if type(local_to_remote) == dict:
             l_r_mapping = local_to_remote.items()
         l_r_mapping = list(l_r_mapping)  # make sure it is ordered
 
+        # Get URLs
         remote_paths = [r for _, r in l_r_mapping]
-
         r = RestRequest(StorageApi.start_file_upload_session) \
             .with_data({'paths': remote_paths}) \
             .with_credentials() \
@@ -82,7 +84,7 @@ class File:
         for i, (local_path, remote_path) in enumerate(l_r_mapping):
             s3_url = r['files'][i]['s3_url']
             FileIO(local_path).upload(s3_url)
-            debug('uploaded {} to {}'.format(local_path, remote_path))
+            print('Uploaded {} to {}'.format(local_path, remote_path))
 
         while 1:
             r = RestRequest(StorageApi.poll_file_upload_session) \
@@ -149,11 +151,22 @@ class File:
             .with_credentials() \
             .run()
 
+    class UploadFileMapping(NamedTuple):
+        """
+        Field number 0: A :class:`.fileset.FilesList` for successfully
+        mapped paths.
+
+        Field number 1: A list of files that are not accessible.
+        (no permission, maybe).
+        """
+        files_to_upload: 'fileset.FilesList'
+        files_ignored: List[str]
+
     @staticmethod
     def convert_to_file_mapping(local_paths: List[str],
                                 remote_path: str,
                                 ignored_paths: List[str] = None
-                                ) -> Tuple['fileset.FilesList', List[str]]:
+                                ) -> UploadFileMapping:
         """A nice method to make you happy.
 
         Converts local file and directory paths to their
@@ -190,7 +203,8 @@ class File:
 
         .. code-block:: python
 
-            File.convert_to_file_mapping(['/a/b/c/'], '/allen/')[0] \\
+            File.convert_to_file_mapping(['/a/b/c/'], '/allen/') \\
+                .files_to_upload \\
                 .upload() \\
                 .as_new_file_set('my_training_files')
 
@@ -198,9 +212,7 @@ class File:
         itself from change of files in local directories.
 
         :return:
-            * A FileList for successfully mapped paths.
-
-            * A list of files that are not accessible.
+            :class:`.File.UploadFileMapping`
         """
         if type(local_paths) != list:
             raise AcaiException('local_paths must be a list!!!')
@@ -244,7 +256,7 @@ class File:
         if ignored_paths is not None:
             ignored_paths += all_ignores
 
-        return l_r_mapping, all_ignores
+        return File.UploadFileMapping(l_r_mapping, all_ignores)
 
     @staticmethod
     def _is_dir(path: str):
@@ -281,11 +293,3 @@ class File:
             .with_query(params) \
             .with_credentials() \
             .run()
-
-    # @staticmethod
-    # def tag(remote_path, kv_pairs=None, **kwargs):
-    #     all_kv_pairs = {}
-    #     if kv_pairs:
-    #         all_kv_pairs.update(kv_pairs)
-    #     for k, v in kwargs.items():
-    #         kv_pairs[k] = v
