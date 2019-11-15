@@ -117,9 +117,9 @@ class Meta:
                                 ''.format(r['id']))
         explicit_path = r['id']
 
-        tags = [] if not tags else tags
         kv_pairs = {} if not kv_pairs else kv_pairs
-        kv_pairs['tags'] = kv_pairs.get('tags', tags)
+        if tags:
+            kv_pairs['tags'] = kv_pairs.get('tags', tags)
 
         data = {'id': explicit_path,
                 'meta': kv_pairs}
@@ -139,9 +139,9 @@ class Meta:
 
         explicit_name = r['id']
 
-        tags = [] if not tags else tags
         kv_pairs = {} if not kv_pairs else kv_pairs
-        kv_pairs['tags'] = kv_pairs.get('tags', tags)
+        if tags:
+            kv_pairs['tags'] = kv_pairs.get('tags', tags)
 
         data = {'id': explicit_name,
                 'meta': kv_pairs}
@@ -156,9 +156,9 @@ class Meta:
                         tags: list = None,
                         kv_pairs: dict = None):
         """Same usage as :py:meth:`~Meta.update_file_meta`"""
-        tags = [] if not tags else tags
         kv_pairs = {} if not kv_pairs else kv_pairs
-        kv_pairs['tags'] = kv_pairs.get('tags', tags)
+        if tags:
+            kv_pairs['tags'] = kv_pairs.get('tags', tags)
 
         data = {'id': job_id,
                 'meta': kv_pairs}
