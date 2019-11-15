@@ -73,7 +73,7 @@ class Condition:
 
         .. code-block:: python
 
-            Condition('model').value('cnn').re()
+            Condition('model').value('c.*n').re()
 
         """
         if self.type == ConditionType.VALUE and type(self.val) == str:

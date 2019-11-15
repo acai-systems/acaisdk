@@ -190,16 +190,16 @@ class Job:
 
     def run(self) -> 'Job':
         """Execute registered job."""
-        if not self.registered:
-            raise AcaiException('Job not registered')
-        if self.submitted:
-            raise AcaiException('Job already submitted')
-        r = RestRequest(JobSchedulerApi.new_job) \
-            .with_data({'job_id': self.id}) \
-            .with_credentials() \
-            .run()
-        self.submitted = True
-        debug(r)
+        # if not self.registered:
+        #     raise AcaiException('Job not registered')
+        # if self.submitted:
+        #     raise AcaiException('Job already submitted')
+        # r = RestRequest(JobSchedulerApi.new_job) \
+        #     .with_data({'job_id': self.id}) \
+        #     .with_credentials() \
+        #     .run()
+        # self.submitted = True
+        # debug(r)
         return self
 
     def _validate(self):
