@@ -168,8 +168,28 @@ class Job:
     def register(self):
         """Register the job with ACAI backend. Only registered job can be run.
         """
-        if self.registered:
-            raise AcaiException('Job already registered')
+        # if self.registered:
+        #     raise AcaiException('Job already registered')
+        # self._validate()
+        #
+        # # use full id of input file set
+        # self.input_file_set = \
+        #     FileSet.list_file_set_content(self.input_file_set)['id']
+        #
+        # data = {k: v for k, v in self.dict.items()
+        #         if k not in self._blacklist_fields_submit}
+        #
+        # r = RestRequest(JobRegistryApi.new_job) \
+        #     .with_data(data) \
+        #     .with_credentials() \
+        #     .run()
+        # self.with_attributes(r)
+        # self.registered = True
+        # debug(r)
+        return self
+
+    def run(self) -> 'Job':
+        """Execute registered job."""
         self._validate()
 
         # use full id of input file set
@@ -183,23 +203,9 @@ class Job:
             .with_data(data) \
             .with_credentials() \
             .run()
-        self.with_attributes(r)
-        self.registered = True
+        self.with_attributes(r['job'])
+        self.submitted = True
         debug(r)
-        return self
-
-    def run(self) -> 'Job':
-        """Execute registered job."""
-        # if not self.registered:
-        #     raise AcaiException('Job not registered')
-        # if self.submitted:
-        #     raise AcaiException('Job already submitted')
-        # r = RestRequest(JobSchedulerApi.new_job) \
-        #     .with_data({'job_id': self.id}) \
-        #     .with_credentials() \
-        #     .run()
-        # self.submitted = True
-        # debug(r)
         return self
 
     def _validate(self):

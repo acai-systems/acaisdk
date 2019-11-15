@@ -135,7 +135,7 @@ class Meta:
                              kv_pairs: dict = None):
         """Same usage as :py:meth:`~Meta.update_file_meta`"""
         # Resolve the potentially vague name to explicit name
-        r = fileset.FileSet.resolve_vague_name(file_set)
+        r = fileset.FileSet.list_file_set_content(file_set)
 
         explicit_name = r['id']
 
@@ -249,6 +249,7 @@ class Meta:
             _msg = 'Cannot specify max and min at the same time.'
             raise AcaiException(_msg)
 
+    # === GET ===
     @staticmethod
     def get_file_meta(*file_list):
         """Get the metadata for a list of files.
@@ -290,6 +291,40 @@ class Meta:
         data = {
             'type': 'file',
             'ids': resolved_paths
+        }
+        return RestRequest(MetadataApi.get_meta) \
+            .with_data(data) \
+            .with_credentials() \
+            .run()
+
+    @staticmethod
+    def get_file_set_meta(*file_set_list):
+        """Same as :py:meth:`get_file_meta()`
+        """
+        # Resolve vague paths
+        resolved_names = []
+        for fs in file_set_list:
+            r = fileset.FileSet.list_file_set_content(fs)
+            resolved_names.append(r['id'])
+        # Get meta data
+        data = {
+            'type': 'fileset',
+            'ids': resolved_names
+        }
+        return RestRequest(MetadataApi.get_meta) \
+            .with_data(data) \
+            .with_credentials() \
+            .run()
+
+    @staticmethod
+    def get_job_meta(*jobid_list):
+        """Same as :py:meth:`get_file_meta()`
+        """
+        # Resolve vague paths
+        # Get meta data
+        data = {
+            'type': 'job',
+            'ids': jobid_list
         }
         return RestRequest(MetadataApi.get_meta) \
             .with_data(data) \

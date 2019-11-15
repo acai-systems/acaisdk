@@ -94,6 +94,7 @@ class FileSet:
 
     @staticmethod
     def resolve_vague_name(vague_name):
+        """Under construction, don't use this"""
         return file.File.resolve_vague_path(vague_name)
 
     @staticmethod
