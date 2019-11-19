@@ -88,7 +88,7 @@ class JobSchedulerApi(Services):
 
 
 class JobMonitorApi(Services):
-    job_status = EnumFactory.GET()
+    job_status = EnumFactory.POST()
 
 
 class MetadataApi(Services):

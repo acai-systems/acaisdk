@@ -325,11 +325,15 @@ class Job:
         :return: :class:`.JobStatus`
         """
         r = RestRequest(JobMonitorApi.job_status) \
-            .with_query({'job_id': self.id}) \
+            .with_data({'ids': [self.id]}) \
             .with_credentials() \
             .run()
-        self.output_file_set = r['output_file_set']
-        self.job_status = JobStatus.from_str(r['job_status'])
+        if r:
+            self.output_file_set = r[0]['output_file_set']
+            self.job_status = JobStatus.from_str(r[0]['job_status'])
+        else:
+            _msg = 'No such job {}'.format(self.id)
+            raise AcaiException(_msg)
         return self.job_status
 
     def get_output_file_set(self):
