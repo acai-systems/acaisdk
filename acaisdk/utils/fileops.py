@@ -81,7 +81,8 @@ class FileIO:
             return r
         finally:
             file_object.close()
-            p.kill()
+            p.terminate()
+            p.join()
 
 
     @staticmethod
