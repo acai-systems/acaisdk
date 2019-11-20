@@ -63,7 +63,7 @@ class FileIO:
                     if offset >= file_size:
                         break
 
-        file_object =  open(self.file_path, 'rb')
+        file_object = open(self.file_path, 'rb')
 
         p = multiprocessing.Process(target=progress_bar, args=(file_object,
                                                                self.file_size))
@@ -83,7 +83,6 @@ class FileIO:
             file_object.close()
             p.terminate()
             p.join()
-
 
     @staticmethod
     def download(presigned_link: str,
