@@ -175,7 +175,8 @@ class FileSet:
 
         download_request = {r_path: l_path for r_path, l_path
                             in zip(remote_paths, local_paths)}
-        file.File.download(download_request)
+        # file.File.download(download_request)
+        file.File.download_batch(download_request)
 
     @staticmethod
     def list_file_set_versions(file_set_name):

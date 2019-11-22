@@ -60,6 +60,7 @@ class StorageApi(Services):
     make_directory = EnumFactory.POST()
     upload_file = EnumFactory.POST()
     download_file = EnumFactory.GET()
+    download_files = EnumFactory.POST()
     list_file_versions = EnumFactory.GET()
 
     # File system v2

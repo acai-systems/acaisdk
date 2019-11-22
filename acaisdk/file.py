@@ -129,13 +129,28 @@ class File:
         """
         for remote_path, local_path in remote_to_local.items():
             s3_url = File._get_download_link(remote_path)['s3_url']
-            if os.path.isdir(local_path):
-                local_path = os.path.join(local_path,
-                                          os.path.basename(remote_path))
-            if utils.IS_CLI:
-                print('Downloading file {} to {}'
-                      ''.format(remote_path, local_path))
-            FileIO.download(s3_url, local_path)
+            File._single_download(remote_path, local_path, s3_url)
+
+    @staticmethod
+    def download_batch(remote_to_local: Dict[str, str]) -> None:
+        remote_to_local = remote_to_local.items()  # make sure sorted
+
+        r_paths = [remote_path for remote_path, _ in remote_to_local]
+        all_s3_urls = [d['s3_url'] for d in
+                       File._get_batch_download_link(r_paths)]
+        for i, (remote_path, local_path) in enumerate(remote_to_local):
+            s3_url = all_s3_urls[i]
+            File._single_download(remote_path, local_path, s3_url)
+
+    @staticmethod
+    def _single_download(remote_path, local_path, s3_url):
+        if os.path.isdir(local_path):
+            local_path = os.path.join(local_path,
+                                      os.path.basename(remote_path))
+        if utils.IS_CLI:
+            print('Downloading file {} to {}'
+                  ''.format(remote_path, local_path))
+        FileIO.download(s3_url, local_path)
 
     @staticmethod
     def _get_upload_link(remote_path):
@@ -148,6 +163,13 @@ class File:
     def _get_download_link(remote_path):
         return RestRequest(StorageApi.download_file) \
             .with_query({'path': remote_path}) \
+            .with_credentials() \
+            .run()
+
+    @staticmethod
+    def _get_batch_download_link(remote_paths: list):
+        return RestRequest(StorageApi.download_files) \
+            .with_data({'paths': remote_paths}) \
             .with_credentials() \
             .run()
 
