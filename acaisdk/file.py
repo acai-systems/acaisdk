@@ -67,6 +67,10 @@ class File:
                 [("local_path", "remote_path:version"), ...]
         """
         # No matter the format, convert to List[(local, remote), ...]
+        if not local_to_remote:
+            print('Nothing to upload')
+            return fileset.FilesList()
+
         l_r_mapping = local_to_remote
         if type(local_to_remote) == dict:
             l_r_mapping = local_to_remote.items()
