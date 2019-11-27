@@ -348,7 +348,7 @@ class Job:
         self.status()
         return self.output_file_set
 
-    def wait(self) -> JobStatus:
+    def wait(self, sleep_secs=10) -> JobStatus:
         """Block until job finish or fail.
 
         By the way, as wait finishes, the output file set will
@@ -362,8 +362,9 @@ class Job:
 
         :return: :class:`.JobStatus`
         """
+        sleep_secs = max(10, sleep_secs)
         while 1:
-            time.sleep(10)
+            time.sleep(sleep_secs)
             status = self.status()
             if status in (JobStatus.FINISHED,
                           JobStatus.FAILED,
