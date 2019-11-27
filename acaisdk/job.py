@@ -348,7 +348,7 @@ class Job:
         self.status()
         return self.output_file_set
 
-    def wait(self, sleep_secs=10) -> JobStatus:
+    def wait(self, first_sleep=10, subsequent_sleeps=10) -> JobStatus:
         """Block until job finish or fail.
 
         By the way, as wait finishes, the output file set will
@@ -362,9 +362,11 @@ class Job:
 
         :return: :class:`.JobStatus`
         """
-        sleep_secs = max(10, sleep_secs)
+        first_sleep = max(10, first_sleep)
+        subsequent_sleeps = max(10, subsequent_sleeps)  # This is f-ing dirty
+
+        time.sleep(first_sleep)
         while 1:
-            time.sleep(sleep_secs)
             status = self.status()
             if status in (JobStatus.FINISHED,
                           JobStatus.FAILED,
@@ -373,6 +375,7 @@ class Job:
                           JobStatus.UNKNOWN):
                 break
             debug('Current status: {}'.format(status))
+            time.sleep(subsequent_sleeps)
 
         return status
 
