@@ -190,10 +190,11 @@ class Job:
         # debug(r)
         return self
 
-    def run(self) -> 'Job':
+    def run(self, force_sequential=False) -> 'Job':
         """Execute registered job."""
         self._validate()
-        Job.__lock.acquire()
+        if force_sequential:
+            Job.__lock.acquire()
         try:
             # use full id of input file set
             self.input_file_set = \
@@ -211,7 +212,8 @@ class Job:
             debug(r)
             return self
         finally:
-            Job.__lock.release()
+            if force_sequential:
+                Job.__lock.release()
 
     def _validate(self):
         fields_not_set = [f for f in self._required_fields
