@@ -210,8 +210,6 @@ class Job:
             self.submitted = True
             debug(r)
             return self
-        except Exception as e:
-            debug("Unexpected Exception {}".format(e))
         finally:
             Job.__lock.release()
 
