@@ -7,6 +7,7 @@ from acaisdk.fileset import FileSet
 from typing import Union, Tuple, List, Dict
 from pprint import pformat
 import time
+import threading
 
 
 class JobStatus(Enum):
@@ -158,6 +159,7 @@ class Job:
         'registered',
         'submitted'
     ]
+    __lock = threading.Lock()
 
     def __init__(self):
         self.registered = False
@@ -191,22 +193,27 @@ class Job:
     def run(self) -> 'Job':
         """Execute registered job."""
         self._validate()
+        Job.__lock.acquire()
+        try:
+            # use full id of input file set
+            self.input_file_set = \
+                FileSet.list_file_set_content(self.input_file_set)['id']
 
-        # use full id of input file set
-        self.input_file_set = \
-            FileSet.list_file_set_content(self.input_file_set)['id']
+            data = {k: v for k, v in self.dict.items()
+                    if k not in self._blacklist_fields_submit}
 
-        data = {k: v for k, v in self.dict.items()
-                if k not in self._blacklist_fields_submit}
-
-        r = RestRequest(JobRegistryApi.new_job) \
-            .with_data(data) \
-            .with_credentials() \
-            .run()
-        self.with_attributes(r['job'])
-        self.submitted = True
-        debug(r)
-        return self
+            r = RestRequest(JobRegistryApi.new_job) \
+                .with_data(data) \
+                .with_credentials() \
+                .run()
+            self.with_attributes(r['job'])
+            self.submitted = True
+            debug(r)
+            return self
+        except Exception as e:
+            debug("Unexpected Exception {}".format(e))
+        finally:
+            Job.__lock.release()
 
     def _validate(self):
         fields_not_set = [f for f in self._required_fields
