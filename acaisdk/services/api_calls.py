@@ -28,13 +28,18 @@ class EnumFactory(Enum):
 class Services(Enum):
     @property
     def service_name(self):
-        return {CredentialApi: 'credential',
-                StorageApi: 'storage',
-                MetadataApi: 'meta',
-                JobRegistryApi: 'job_registry',
-                JobSchedulerApi: 'job_scheduler',
-                JobMonitorApi: 'job_monitor',
-                ProvenanceApi: 'provenance'}[type(self)]
+        return {
+            CredentialApi: 'credential',
+            StorageApi: 'storage',
+            MetadataApi: 'meta',
+            JobRegistryApi: 'job_registry',
+            JobSchedulerApi: 'job_scheduler',
+            JobMonitorApi: 'job_monitor',
+            ProvenanceApi: 'provenance',
+            ProfilerApi: 'profiler',
+            AutoProvisionerApi: 'auto_provisioner',
+            LogServerApi: 'log_server',
+        }[type(self)]
 
     @property
     def endpoint(self):
@@ -109,6 +114,18 @@ class MetadataApi(Services):
 
     # Query
     query_meta = EnumFactory.POST()
+
+
+class LogServerApi(Services):
+    get_job_log = EnumFactory.GET()
+
+
+class ProfilerApi(Services):
+    pass
+
+
+class AutoProvisionerApi(Services):
+    new_job = EnumFactory.POST()
 
 
 class ProvenanceApi(Services):
