@@ -1,6 +1,7 @@
 from acaisdk.services.api_calls import *
 from typing import Iterable, List
 from acaisdk import file
+from acaisdk.utils.fileops import FileIO
 
 
 class FilesList(list):
@@ -150,7 +151,6 @@ class FileSet:
             .with_query(params) \
             .with_credentials() \
             .run()
-
         local_paths = []
         remote_paths = []
         urls = []
@@ -168,15 +168,15 @@ class FileSet:
             # Validate if there's collision
             if not force and os.path.exists(path):
                 raise AcaiException('{} already exists. '
-                                    'Use "force" to enable overwriting'
+                                    'Use "force=True" to enable overwriting'
                                     ''.format(path))
             folder = os.path.dirname(path)
             os.makedirs(folder, exist_ok=True)
 
-        download_request = {r_path: l_path for r_path, l_path
-                            in zip(remote_paths, local_paths)}
-        # file.File.download(download_request)
-        file.File.download_batch(download_request)
+        for r_path, l_path, url in zip(remote_paths, local_paths, urls):
+            print('Downloading {} to {} '.format(r_path, l_path), end='')
+            FileIO.download(url, l_path)
+            print('[Done]')
 
     @staticmethod
     def list_file_set_versions(file_set_name):
