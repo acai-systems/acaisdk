@@ -174,7 +174,8 @@ class FileSet:
             os.makedirs(folder, exist_ok=True)
 
         for r_path, l_path, url in zip(remote_paths, local_paths, urls):
-            print('Downloading {} to {} '.format(r_path, l_path), end='')
+            print('Downloading {} to {} '.format(r_path, l_path))
+            print('Printing the file URL {} '.format(url), end='')
             FileIO.download(url, l_path)
             print('[Done]')
 
