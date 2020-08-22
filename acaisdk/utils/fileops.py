@@ -102,5 +102,5 @@ class FileIO:
                         p_bar.update(len(chunk))
                         f.write(chunk)
             return r
-        except requests.exceptions.HTTPError as err:
-            print("error when downloading file", err)
+        except:
+            print("error when downloading file")
