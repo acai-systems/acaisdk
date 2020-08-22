@@ -87,9 +87,10 @@ class FileIO:
     @staticmethod
     def download(presigned_link: str,
                  local_file_path: str):
-        try:
-            r = get_session().get(presigned_link, verify=False, stream=True)
-            r.raise_for_status()
+
+        r = get_session().get(presigned_link, verify=False, stream=True)
+        #r.raise_for_status()
+        if r.status_code == 200:
             content_len = int(r.headers['Content-Length'])
 
             with open(local_file_path, 'wb') as f, tqdm(
@@ -102,5 +103,3 @@ class FileIO:
                         p_bar.update(len(chunk))
                         f.write(chunk)
             return r
-        except:
-            print("error when downloading file")
