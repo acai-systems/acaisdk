@@ -90,6 +90,7 @@ class FileIO:
 
         r = get_session().get(presigned_link, verify=False, stream=True)
         #r.raise_for_status()
+        print(r)
         if r.status_code == 200:
             content_len = int(r.headers['Content-Length'])
 
