@@ -87,17 +87,21 @@ class FileIO:
     @staticmethod
     def download(presigned_link: str,
                  local_file_path: str):
-        r = get_session().get(presigned_link, verify=False, stream=True)
-        r.raise_for_status()
-        content_len = int(r.headers['Content-Length'])
+        try:
+            r = get_session().get(presigned_link, verify=False, stream=True)
+            r.raise_for_status()
+            content_len = int(r.headers['Content-Length'])
 
-        with open(local_file_path, 'wb') as f, tqdm(
-                total=content_len,
-                unit='B', unit_scale=True,
-                unit_divisor=1024,
-                ascii=True, disable=not utils.IS_CLI) as p_bar:
-            for chunk in r.iter_content(chunk_size=8192):
-                if chunk:  # filter out keep-alive new chunks
-                    p_bar.update(len(chunk))
-                    f.write(chunk)
-        return r
+            with open(local_file_path, 'wb') as f, tqdm(
+                    total=content_len,
+                    unit='B', unit_scale=True,
+                    unit_divisor=1024,
+                    ascii=True, disable=not utils.IS_CLI) as p_bar:
+                for chunk in r.iter_content(chunk_size=8192):
+                    if chunk:  # filter out keep-alive new chunks
+                        p_bar.update(len(chunk))
+                        f.write(chunk)
+            return r
+        except requests.exceptions.HTTPError as err:
+            print("error when downloading file", err)
+            continue
