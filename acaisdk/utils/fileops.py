@@ -104,4 +104,3 @@ class FileIO:
             return r
         except requests.exceptions.HTTPError as err:
             print("error when downloading file", err)
-            continue
