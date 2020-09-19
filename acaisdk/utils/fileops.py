@@ -27,7 +27,7 @@ class FileIO:
                 with tqdm(total=self.file_size,
                           unit='B', unit_scale=True, unit_divisor=1024,
                           ascii=True, disable=not utils.IS_CLI) as p_bar:
-                    while 1:
+                    while True:
                         offset = file_object.tell()
                         p_bar.update((offset - prev_pos))
                         prev_pos = offset
@@ -56,7 +56,7 @@ class FileIO:
             with tqdm(total=file_size,
                       unit='B', unit_scale=True, unit_divisor=1024,
                       ascii=True, disable=not utils.IS_CLI) as p_bar:
-                while 1:
+                while True:
                     offset = file_obj.tell()
                     p_bar.update((offset - prev_pos))
                     prev_pos = offset
@@ -65,8 +65,9 @@ class FileIO:
 
         file_object = open(self.file_path, 'rb')
 
-        p = multiprocessing.Process(target=progress_bar, args=(file_object,
-                                                               self.file_size))
+        p = multiprocessing.Process(
+            target=progress_bar, args=(
+                file_object, self.file_size))
         p.start()
 
         headers = {'Content-Type': 'application/binary'}
@@ -78,6 +79,7 @@ class FileIO:
                 # fd for an empty file but can upload with data=None.
                 r = get_session().put(presigned_link, data=None,
                                       headers=headers)
+            print("r = ", r)
             return r
         finally:
             file_object.close()
@@ -89,7 +91,7 @@ class FileIO:
                  local_file_path: str):
 
         r = get_session().get(presigned_link, verify=False, stream=True)
-        #r.raise_for_status()
+        # r.raise_for_status()
         print(r)
         if r.status_code == 200:
             content_len = int(r.headers['Content-Length'])

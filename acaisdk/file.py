@@ -72,7 +72,7 @@ class File:
             return fileset.FilesList()
 
         l_r_mapping = local_to_remote
-        if type(local_to_remote) == dict:
+        if isinstance(local_to_remote, dict):
             l_r_mapping = local_to_remote.items()
         l_r_mapping = list(l_r_mapping)  # make sure it is ordered
 
@@ -90,7 +90,7 @@ class File:
             FileIO(local_path).upload(s3_url)
             print('Uploaded {} to {}'.format(local_path, remote_path))
 
-        while 1:
+        while True:
             r = RestRequest(StorageApi.poll_file_upload_session) \
                 .with_query({'session_id': session_id}) \
                 .with_credentials() \
@@ -240,7 +240,7 @@ class File:
         :return:
             :class:`.File.UploadFileMapping`
         """
-        if type(local_paths) != list:
+        if not isinstance(local_paths, list):
             raise AcaiException('local_paths must be a list!!!')
 
         l_r_mapping = fileset.FilesList()
