@@ -65,10 +65,11 @@ class FileIO:
 
         file_object = open(self.file_path, 'rb')
 
-        p = multiprocessing.Process(
-            target=progress_bar, args=(
-                file_object, self.file_size))
-        p.start()
+        # TODO: buggy code
+        # p = multiprocessing.Process(
+        #     target=progress_bar, args=(
+        #         file_object, self.file_size))
+        # p.start()
 
         headers = {'Content-Type': 'application/binary'}
         try:
@@ -83,8 +84,8 @@ class FileIO:
             return r
         finally:
             file_object.close()
-            p.terminate()
-            p.join()
+            # p.terminate()
+            # p.join()
 
     @staticmethod
     def download(presigned_link: str,
