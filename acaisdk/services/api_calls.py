@@ -121,7 +121,7 @@ class LogServerApi(Services):
 
 
 class ProfilerApi(Services):
-    pass
+    register_template = EnumFactory.POST()
 
 
 class AutoProvisionerApi(Services):
