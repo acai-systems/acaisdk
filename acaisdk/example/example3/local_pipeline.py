@@ -7,14 +7,17 @@ import sys
 
 inputPath = sys.argv[1]
 outputPath = sys.argv[2]
+k1 = float(sys.argv[3])
+b = float(sys.argv[4])
+epsilon = float(sys.argv[5])
 
 
 # preprocess / load data data
 train, dev = preprocess(path=inputPath, newPrepocess=True)
 
 # get bm25 score
-trainScores, trainLabels = get_bm25_scores(train)
-devScores, devLabels = get_bm25_scores(dev)
+trainScores, trainLabels = get_bm25_scores(train, k1, b, epsilon)
+devScores, devLabels = get_bm25_scores(dev, k1, b, epsilon)
 
 # rank
 train_results = get_results(trainScores, trainLabels, 'train [bm25]')
