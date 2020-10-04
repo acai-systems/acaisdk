@@ -2,7 +2,7 @@ import numpy as np
 from tqdm import tqdm
 from gensim.summarization.bm25 import BM25
 
-def get_bm25_scores(dataset):
+def get_bm25_scores(dataset, k1, b, epsilon):
     bm25_scores = list()
     labels = list()
 
@@ -13,7 +13,7 @@ def get_bm25_scores(dataset):
                 candidate_sentences = qas_context['context_sents_lemmas_without_stopwords']
                 labels.append(set([d['ans_label'] for d in qas['answers']]))
 
-                bm25 = BM25(candidate_sentences)
+                bm25 = BM25(candidate_sentences, k1, b, epsilon)
                 candidate_scores = bm25.get_scores(question_sentence)
                 candidate_scores_dict = dict(zip(range(len(candidate_scores)),
                                                  candidate_scores))
