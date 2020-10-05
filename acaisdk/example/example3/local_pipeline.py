@@ -4,12 +4,22 @@ from evaluation import get_results
 from bm25 import get_bm25_scores, get_bm25_mapback
 import json
 import sys
+import argparse
 
-inputPath = sys.argv[1]
-outputPath = sys.argv[2]
-k1 = float(sys.argv[3])
-b = float(sys.argv[4])
-epsilon = float(sys.argv[5])
+# parse argparse argument for hyperparam tuning
+parser = argparse.ArgumentParser()
+parser.add_argument('inPath', nargs='?', type=str, help="input folder for raw dataset")
+parser.add_argument('outPath', nargs='?', type=str, help="output folder for processed dataset")
+parser.add_argument("-k1", nargs='?', default=1.2, type=float, help="hyperparam for bm25: k1")
+parser.add_argument("-b", nargs='?', default=0.75, type=float, help="hyperparam for bm25: b")
+parser.add_argument("-e", nargs='?', default=1e-8, type=float, help="hyperparam for bm25: epsilon")
+args = parser.parse_args()
+
+inputPath = args.inPath
+outputPath = args.outPath
+k1 = args.k1
+b = args.b
+epsilon = args.e
 
 
 # preprocess / load data data
