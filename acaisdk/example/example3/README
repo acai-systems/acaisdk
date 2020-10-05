@@ -1,5 +1,5 @@
-To run this bm25 code<br>
+To run this bm25 code
 $ python local_pipeline.py {input_raw_data_folder} {output_processed_data_folder} -k1 {bm25_hyperparam_k1} -b {bm25_hyperparam_b} -e {bm25_hyperparam_epsilon} <br>
-<br>
-Default value is<br>
+
+Default value is:
 $ python local_pipeline.py SquadData/ Output/ -k1 1.2 -b 0.75 -e 1e-8
