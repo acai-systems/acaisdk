@@ -251,14 +251,15 @@ class Job:
 
         # TODO: autoprovision
         def _to_string(v, name):
-            if type(v) == int:
+            if isinstance(v, int):
                 return '{}'.format(v)
-            elif type(v) == tuple:
+            elif isinstance(v, tuple):
                 if len(v) == 1:
                     return '{}'.format(v[0])
                 elif len(v) == 2:
                     return '{}-{}'.format(*v)
-            _msg = 'Wrong type of argument for resource {}: {}'.format(name, v)
+            _msg = 'Wrong type of argument for resource {}: {}'.format(
+                name, v)
             raise ArgError(_msg)
 
         if vcpu:
@@ -370,10 +371,11 @@ class Job:
         :return: :class:`.JobStatus`
         """
         first_sleep = max(10, first_sleep)
-        subsequent_sleeps = max(10, subsequent_sleeps)  # This is f-ing dirty
+        subsequent_sleeps = max(
+            10, subsequent_sleeps)  # This is f-ing dirty
 
         time.sleep(first_sleep)
-        while 1:
+        while True:
             status = self.status()
             if status in (JobStatus.FINISHED,
                           JobStatus.FAILED,
@@ -449,24 +451,83 @@ class Job:
 
 
 class ProfilingJob(object):
+
     __slots__ = [
         'id',
-        'profiling_config',
-        'input_fileset_id',
-        'command']
+        'name',
+        'input_file_set',
+        'code',
+        'command_template',
+        'container_image',
+        'all_options',
+        'memory_space',
+        'cpu_space',
+        'model_name',
+        'model_id',
+        'spawned_jobs',
+        'state'
+    ]
 
-    def __init__(self, job: Job, input_fileset_id: int, command: str):
-        self.profiling_config = job
-        self.input_fileset_id = input_fileset_id
-        self.command = command
+    _blacklist_fields_submit = [
+        'job'
+    ]
+
+    _required_fields = [
+        'name',
+        'input_file_set',
+        'code',
+        'command_template',
+        'container_image'
+    ]
+
+    def __init__(self):
+        pass
 
     @property
-    def dict(self):
-        def _object_to_dict(o):
-            return o.dict if type(o) == Job else o
+    def dict(self) -> OrderedDict:
+        """Get a dictionary representation of the object.
+        """
+        r = OrderedDict()
+        [r.update({s: getattr(self, s)}) for s in self.__slots__
+         if hasattr(self, s)]
+        return r
 
-        return {s: _object_to_dict(getattr(self, s))
-                for s in self.__slots__ if hasattr(self, s)}
+    def with_attributes(self, d: dict) -> 'ProfilingJob':
+        """Fill ProfilingJob object with attributes.
+
+        :param d: Dict of attributes to add to the job object.
+        :return: Updated ProfilingJob object.
+        """
+        [setattr(self, k, v) for k, v in d.items() if k in self.__slots__]
+        return self
+
+    def _validate(self):
+        fields_not_set = [f for f in self._required_fields
+                          if not hasattr(self, f)]
+        if fields_not_set:
+            _msg = 'Fields not set when submitting job: ' \
+                   '{}'.format(fields_not_set)
+            raise ArgError(_msg)
+
+    def profile(self, result_dict: dict = None) -> bool:
+        """Run a profiling job.
+        """
+        self._validate()
+
+        data = {k: v for k, v in self.dict.items()
+                if k not in self._blacklist_fields_submit}
+
+        r = RestRequest(ProfilerApi.register_template) \
+            .with_data(data) \
+            .with_credentials() \
+            .run()
+
+        debug(r)
+
+        if result_dict is not None:
+            result_dict.update(r)
+
+        return r
 
 
 class AutoProvisioner(object):
@@ -503,7 +564,7 @@ class AutoProvisioner(object):
     ]
 
     _name_remap = {
-        'output_path': 'output_folder'
+        # 'output_path': 'output_folder' # Why we need this?
     }
 
     def with_attributes(self, d: dict) -> 'AutoProvisioner':
