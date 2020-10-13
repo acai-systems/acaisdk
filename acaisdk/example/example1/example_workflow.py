@@ -48,7 +48,7 @@ workspace = os.path.dirname(os.path.realpath('__file__'))  # get current directo
 
 
 
-credentials.login('QBZQx2IuuJOLQLp8jjL3guVsI50fSng1')
+credentials.login('bWEPDTmZIFiSJbYw15FXevi0FZ3bp2Tk')
 
 # Upload code
 code = os.path.join(workspace, 'wordcount.zip')
