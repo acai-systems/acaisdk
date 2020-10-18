@@ -464,6 +464,8 @@ class ProfilingJob(object):
         'all_options',
         'memory_space',
         'cpu_space',
+        'nnode_space',
+        'framework',
         'model_name',
         'model_id',
         'spawned_jobs',
