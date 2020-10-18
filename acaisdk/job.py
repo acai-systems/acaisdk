@@ -138,6 +138,8 @@ class Job:
         'registered',
         'submitted',
         'job_status',
+        'nnode',
+        'framework',
     ]
     _required_fields = [
         'name',
