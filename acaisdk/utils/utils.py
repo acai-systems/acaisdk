@@ -45,12 +45,22 @@ def md5_update_from_file_list(filelist: [Union[str, Path]], hash: Hash):
     return hash
 
 
+def md5_update_from_string_list(stringlist, hash: Hash):
+    for string in stringlist:
+        hash.update(string.encode())
+    return hash
+
+
 def md5_file(filename: Union[str, Path]):
     return str(md5_update_from_file(filename, hashlib.md5()).hexdigest())
 
 
 def md5_file_list(filelist: [Union[str, Path]]):
     return str(md5_update_from_file_list(filelist, hashlib.md5()).hexdigest())
+
+
+def md5_string_list(stringlist):
+    return str(md5_update_from_string_list(stringlist, hashlib.md5()).hexdigest())
     
 
 def debug(*msg, newline=True):
