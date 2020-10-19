@@ -5,7 +5,8 @@ class Project:
     @staticmethod
     def create_project(project_id: str,
                        admin_token: str,
-                       project_admin: str) -> dict:
+                       project_admin: str,
+                       budget: float=10) -> dict:
         """This is the starting point of your ACAI journey.
 
         Project, like its definition in GCP, is a bundle of resources. Users,
@@ -32,8 +33,15 @@ class Project:
                   "project_admin_name": "string"
                 }
         """
+
+        if budget == 10:
+            print("Set the budget of Project {%s} to default value: $%.2f" %(project_id, budget))
+            print("Update the budget using: set_budget(amount)")
+
+
         return RestRequest(CredentialApi.create_project) \
             .with_data({'project_id': project_id,
+                        'budget': budget,
                         'admin_token': admin_token,
                         "project_admin_name": project_admin}) \
             .run()
