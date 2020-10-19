@@ -77,7 +77,12 @@ class FileSet:
                    'instead of {}.'.format(type(remote_entities))
             raise AcaiException(_msg)
         
-        files_hash_strings = [meta.Meta.get_file_meta(r)['data'][0]['__hash__'] for r in sorted(remote_entities)]
+        files_hash_strings = []
+        for r in sorted(remote_entities):
+            if r[1] == '@':
+                files_hash_strings.append(meta.Meta.get_file_set_meta(r[2:])['data'][0]['__hash__'])
+            else:
+                files_hash_strings.append(meta.Meta.get_file_meta(r)['data'][0]['__hash__'])
         fileset_hash = md5_string_list(files_hash_strings)
 
         data = {
