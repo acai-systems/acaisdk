@@ -1,4 +1,8 @@
 import os
+import hashlib
+from _hashlib import HASH as Hash
+from pathlib import Path
+from typing import Union
 
 IS_CLI = False
 
@@ -25,6 +29,29 @@ def bytes_to_size(size):
     else:
         return '{:.2f}TB'.format(size / (1024.0 ** 4))
 
+
+def md5_update_from_file(filename: Union[str, Path], hash: Hash):
+    assert Path(filename).is_file()
+    hash.update(filename.encode())
+    with open(str(filename), "rb") as f:
+        for chunk in iter(lambda: f.read(4096), b""):
+            hash.update(chunk)
+    return hash
+
+    
+def md5_update_from_file_list(filelist: [Union[str, Path]], hash: Hash):
+    for file in sorted(filelist):
+        hash = md5_update_from_file(file, hash)
+    return hash
+
+
+def md5_file(filename: Union[str, Path]):
+    return str(md5_update_from_file(filename, hashlib.md5()).hexdigest())
+
+
+def md5_file_list(filelist: [Union[str, Path]]):
+    return str(md5_update_from_file_list(filelist, hashlib.md5()).hexdigest())
+    
 
 def debug(*msg, newline=True):
     if DEBUG:
