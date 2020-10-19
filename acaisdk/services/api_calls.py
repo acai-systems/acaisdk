@@ -164,7 +164,7 @@ class RestRequest:
 
     def run(self):
         endpoint, port = self.service.endpoint
-        debug('Running request:',
+        debug('Running request from dev:',
               endpoint,
               port,
               self.service.service_name,
