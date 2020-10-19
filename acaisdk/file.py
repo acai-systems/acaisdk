@@ -76,10 +76,13 @@ class File:
             l_r_mapping = local_to_remote.items()
         l_r_mapping = list(l_r_mapping)  # make sure it is ordered
 
+        # Get file hashvalues 
+        file_hashes = [utils.md5_file(l) for l, _ in l_r_mapping]
+
         # Get URLs
         remote_paths = [r for _, r in l_r_mapping]
         r = RestRequest(StorageApi.start_file_upload_session) \
-            .with_data({'paths': remote_paths}) \
+            .with_data({'paths': remote_paths, 'hashes': file_hashes}) \
             .with_credentials() \
             .run()
         session_id = r['session_id']
