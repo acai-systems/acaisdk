@@ -72,8 +72,10 @@ class FileIO:
         # p.start()
         
         headers = {'Content-Type': 'application/binary'}
-        
-        if storage == 'infrequent':
+
+        if storage == 'frequent':
+            storage_class = 'STANDARD'
+        elif storage == 'infrequent':
             storage_class = 'STANDARD_IA'
         elif storage == 'archive':
             storage_class = 'GLACIER'
