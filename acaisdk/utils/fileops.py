@@ -80,7 +80,7 @@ class FileIO:
         elif storage == 'archive':
             storage_class = 'GLACIER'
         
-        headers['x-amz-storage-clas'] = storage_class
+        headers['x-amz-storage-class'] = storage_class
 
         try:
             r = get_session().put(presigned_link, data=file_object,
