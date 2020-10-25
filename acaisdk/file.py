@@ -39,7 +39,7 @@ class File:
     @staticmethod
     def upload(local_to_remote: Union[Dict[str, str],
                                       List[Tuple[str, str]]],
-               results: list = None) -> 'fileset.FilesList':
+               results: list = None, storage: str = 'frequent') -> 'fileset.FilesList':
         """Upload multiple files.
 
         Notice that the method does not deal with conflicting updates. It is
@@ -90,7 +90,7 @@ class File:
         debug(l_r_mapping)
         for i, (local_path, remote_path) in enumerate(l_r_mapping):
             s3_url = r['files'][i]['s3_url']
-            FileIO(local_path).upload(s3_url)
+            FileIO(local_path).upload(s3_url, storage)
             print('Uploaded {} to {}'.format(local_path, remote_path))
 
         while True:
