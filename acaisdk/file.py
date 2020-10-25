@@ -85,7 +85,7 @@ class File:
         print('*' * 20)
         remote_paths = [r for _, r in l_r_mapping]
         r = RestRequest(StorageApi.start_file_upload_session) \
-            .with_data({'paths': remote_paths, 'hashes': file_hashes, 'storage_class': storage}) \
+            .with_data({'storage_class': storage, 'paths': remote_paths, 'hashes': file_hashes}) \
             .with_credentials() \
             .run()
         session_id = r['session_id']
