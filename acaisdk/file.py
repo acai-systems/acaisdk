@@ -80,6 +80,9 @@ class File:
         file_hashes = [utils.md5_file(l) for l, _ in l_r_mapping]
 
         # Get URLs
+        print("*" * 20)
+        print(storage)
+        print('*' * 20)
         remote_paths = [r for _, r in l_r_mapping]
         r = RestRequest(StorageApi.start_file_upload_session) \
             .with_data({'paths': remote_paths, 'hashes': file_hashes, 'storage_class': storage}) \
