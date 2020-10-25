@@ -80,9 +80,12 @@ class File:
         file_hashes = [utils.md5_file(l) for l, _ in l_r_mapping]
 
         # Get URLs
+        print("*" * 20)
+        print(storage)
+        print('*' * 20)
         remote_paths = [r for _, r in l_r_mapping]
         r = RestRequest(StorageApi.start_file_upload_session) \
-            .with_data({'paths': remote_paths, 'hashes': file_hashes}) \
+            .with_data({'paths': remote_paths, 'hashes': file_hashes, 'storage_class': storage}) \
             .with_credentials() \
             .run()
         session_id = r['session_id']
@@ -90,7 +93,8 @@ class File:
         debug(l_r_mapping)
         for i, (local_path, remote_path) in enumerate(l_r_mapping):
             s3_url = r['files'][i]['s3_url']
-            FileIO(local_path).upload(s3_url, storage)
+            # FileIO(local_path).upload(s3_url, storage)
+            FileIO(local_path).upload(s3_url)
             print('Uploaded {} to {}'.format(local_path, remote_path))
 
         while True:
