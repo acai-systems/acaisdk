@@ -73,15 +73,6 @@ class FileIO:
         
         headers = {'Content-Type': 'application/binary'}
 
-        if storage == 'frequent':
-            storage_class = 'STANDARD'
-        elif storage == 'infrequent':
-            storage_class = 'STANDARD_IA'
-        elif storage == 'archive':
-            storage_class = 'GLACIER'
-        
-        headers['x-amz-storage-class'] = storage_class
-
         try:
             r = get_session().put(presigned_link, data=file_object,
                                   headers=headers)
