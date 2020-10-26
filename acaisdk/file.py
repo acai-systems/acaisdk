@@ -122,6 +122,15 @@ class File:
 
         return versioned_mapping
 
+
+    @staticmethod
+    def change_status(path: str, storage: str):
+        r = RestRequest(StorageApi.change_status) \
+                    .with_data({'path': path, 
+                                'storage_class': storage}) \
+                    .run()
+        return r
+
     @staticmethod
     def download(remote_to_local: Dict[str, str]) -> None:
         """ Download multiple remote files to local.
