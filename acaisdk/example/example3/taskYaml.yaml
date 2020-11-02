@@ -1,0 +1,14 @@
+dataset:
+  path: squad/
+description: acai automl test
+gpu: 0
+input_file_set_id: squad_demo.works
+job_limit: 2
+memory: 2Gi
+metric: MAP
+order: desc
+output_file_set_id: squad_demo_output
+token: 00uUq2XXjY2mYZSe0WPHA6R0qpKUXi4s
+type: CandidateAnswerSelection
+user_id: 5599
+vcpu: 0.2

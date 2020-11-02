@@ -133,7 +133,8 @@ class ProvenanceApi(Services):
     register = EnumFactory.POST()
 
 class AutoMLApi(Services):
-    submit_task = EnumFactory.POST()
+    tasks = EnumFactory.POST()
+    submit_model = EnumFactory.POST()
     get_status = EnumFactory.GET()
 
 class RestRequest:
@@ -189,6 +190,33 @@ class RestRequest:
                                    port,
                                    self.service.service_name,
                                    self.service.name,
+                                   self.query,
+                                   self.data)
+        raise AcaiException('Unknown request type: '
+                            '{}'.format(self.service.method))
+    def runCustomPath(self, pathStr):
+        endpoint, port = self.service.endpoint
+        debug('Running request:',
+              endpoint,
+              port,
+              self.service.service_name,
+              pathStr)
+
+        if self.service.method == RestMethods.get:
+            self.query.update(self.credentials)
+            debug('GET query', json.dumps(self.query))
+            return rest_utils.get(endpoint,
+                                  port,
+                                  self.service.service_name,
+                                  pathStr,
+                                  self.query)
+        elif self.service.method == RestMethods.post:
+            self.data.update(self.credentials)
+            debug('POST data', json.dumps(self.data))
+            return rest_utils.post(endpoint,
+                                   port,
+                                   self.service.service_name,
+                                   pathStr,
                                    self.query,
                                    self.data)
         raise AcaiException('Unknown request type: '

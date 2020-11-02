@@ -1,12 +1,21 @@
 from acaisdk.services.api_calls import *
 from acaisdk import credentials
+import yaml
 import json
-
 class AutoML:
     @staticmethod
-    def submit_task(filename):
-        data = json.dumps(open(filname, 'rb').read())
-        r = RestRequest(AutoMLApi.submit_task) \
+    def tasks(filename):
+        data = yaml.load(open(filename, 'rb').read(), Loader=yaml.FullLoader)
+        r = RestRequest(AutoMLApi.tasks) \
+                .with_data(data) \
+                .with_credentials() \
+                .run()
+        return r
+    
+    @staticmethod
+    def submit_model(filename):
+        data = yaml.load(open(filename, 'rb').read(), Loader=yaml.FullLoader)
+        r = RestRequest(AutoMLApi.submit_model) \
                 .with_data(data) \
                 .with_credentials() \
                 .run()
@@ -14,10 +23,8 @@ class AutoML:
     
     @staticmethod
     def get_status(jobid):
-        r = RestRequest(AutoMLApi.job_status) \
-            .with_data({'id': [jobid]}) \
+        r = RestRequest(AutoMLApi.get_status) \
             .with_credentials() \
-            .run()
-        
+            .runCustomPath("tasks/"+str(jobid)+"/status")
         return r
 

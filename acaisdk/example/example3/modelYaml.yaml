@@ -1,0 +1,16 @@
+tasks:
+  - type: CandidateAnswerSelection
+    models:
+      - name: bm25_user
+        link: /bm25_user.zip
+        filename: bm25_user.zip
+        metric: MAP
+        order: desc
+        hyperparameters:
+          - name: k1
+            spec:
+              type: DOUBLE
+              default: 1.2
+              min: 1.2
+              max: 2.0
+              scaleType: UNIT_LINEAR_SCALE

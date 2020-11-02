@@ -16,7 +16,7 @@ def get_session() -> requests.Session:
 
 
 def post(server, port, service, path,
-         params: dict, data: dict):
+         params: dict, data: dict, file=None):
     r = get_session().post('http://{}:{}/{}/{}'
                            .format(server, port, service, path),
                            params=params,
