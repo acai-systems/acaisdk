@@ -78,17 +78,11 @@ if __name__ == '__main__':
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
 
+    submit_task = time.time()
     # Turn up tolerance for faster convergence
+    
     clf = LogisticRegressionCV(cv=10, penalty='l1', solver='saga', tol=0.1,
                                max_iter=epochs, multi_class='auto')
-
-    # clf = MLPClassifier(hidden_layer_sizes=(50,), max_iter=epochs, alpha=1e-4,
-    #                     solver='sgd', verbose=10, random_state=1,
-    #                     learning_rate_init=.1)
-    # with Client("localhost:8786") as c:
-        # c.get_versions(check=True)
-        # train
-    submit_task = time.time()
     ray.init()
     register_ray()
     with joblib.parallel_backend('ray'):

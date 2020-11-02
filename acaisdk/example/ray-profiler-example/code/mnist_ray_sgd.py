@@ -92,7 +92,7 @@ def main():
                         help='For Saving the current Model')
     args = parser.parse_args()
 
-    ray.init()
+    ray.init(address='auto')
 
     trainer1 = TorchTrainer(
         training_operator_cls=MyTrainingOperator,
@@ -101,8 +101,17 @@ def main():
         config=vars(args))
 
     stats = trainer1.train()
+
+    # lift the trainer to on remote
+    # RemoteTrainer = ray.remote(num_gpus=0.5)(TorchTrainer)
+    # remote_trainer = RemoteTrainer.remote(
+    #     training_operator_cls=MyTrainingOperator, num_workers=1, use_gpu=True, config=vars(args))
+    # # remote_trainer.train.remote()
+    # stats = ray.get([remote_trainer.train.remote()])
+
+    # ray.tune.run(TorchTrainer.as_trainable(
+    #     training_operator_cls=MyTrainingOperator, num_workers=1, use_gpu=True, config=vars(args)))
     print(stats)
-    trainer1.shutdown()
     print("success!")
 
 
