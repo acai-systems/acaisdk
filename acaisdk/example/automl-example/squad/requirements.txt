@@ -1,0 +1,6 @@
+###
+pandas
+nltk
+numpy
+tqdm
+gensim
