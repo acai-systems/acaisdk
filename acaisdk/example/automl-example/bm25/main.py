@@ -52,43 +52,33 @@ if not args.evaluate:
     print("Training bm25 with hyperparams: k1 = {}\t b = {}\t epsilon={}\t".format(k1, b, epsilon))
     trainScores, trainLabels = get_bm25_scores(train, k1, b, epsilon)
     devScores, devLabels = get_bm25_scores(dev, k1, b, epsilon)
+
+    # rank
+    train_results = get_results(trainScores, trainLabels, 'train [bm25]')
+    dev_results = get_results(devScores, devLabels, 'dev [bm25]')
     
-    with open(os.path.join(outputPath, "trainScores.txt"), "wb") as fp:
-    	pickle.dump(trainScores, fp)
+    # writeout results
+    outputResult(train_results)
+    outputResult(dev_results)
     
-    with open(os.path.join(outputPath, "trainLabels.txt"), "wb") as fp:
-    	pickle.dump(trainLabels, fp)
-    
-    with open(os.path.join(outputPath, "devScores.txt"), "wb") as fp:
-    	pickle.dump(devScores, fp)
-    
-    with open(os.path.join(outputPath, "devLabels.txt"), "wb") as fp:
-    	pickle.dump(devLabels, fp)
+    # output to outfile
+    resTrain = get_bm25_mapback(train, trainScores, trainLabels)
+    resDev = get_bm25_mapback(dev, devScores, devLabels)
+    with open(outputPath+'train.json', 'w') as f:
+        json.dump(resTrain, f)
+    with open(outputPath+'dev.json', 'w') as f:
+        json.dump(resDev, f)
 else:
-    with open(os.path.join(inputPath, "trainScores.txt"), "rb") as fp:
-        trainScores = pickle.load(fp)
-    
-    with open(os.path.join(inputPath, "trainLabels.txt"), "rb") as fp:
-        trainLabels = pickle.load(fp)
-    
-    with open(os.path.join(inputPath, "devScores.txt"), "rb") as fp:
-        devScores = pickle.load(fp)
-    
-    with open(os.path.join(inputPath, "devLabels.txt"), "rb") as fp:
-        devLabels = pickle.load(fp)
+    devScores, devLabels = get_bm25_scores(dev, k1, b, epsilon)
 
-# rank
-train_results = get_results(trainScores, trainLabels, 'train [bm25]')
-dev_results = get_results(devScores, devLabels, 'dev [bm25]')
+    # rank
+    dev_results = get_results(devScores, devLabels, 'dev [bm25]')
+    
+    # writeout results
+    outputResult(dev_results)
+    
+    # output to outfile
+    resDev = get_bm25_mapback(dev, devScores, devLabels)
+    with open(outputPath+'dev.json', 'w') as f:
+        json.dump(resDev, f)
 
-# writeout results
-outputResult(train_results)
-outputResult(dev_results)
-
-# output to outfile
-resTrain = get_bm25_mapback(train, trainScores, trainLabels)
-resDev = get_bm25_mapback(dev, devScores, devLabels)
-with open(outputPath+'train.json', 'w') as f:
-    json.dump(resTrain, f)
-with open(outputPath+'dev.json', 'w') as f:
-    json.dump(resDev, f)
