@@ -521,14 +521,14 @@ class ProfilingJob(object):
         data = {k: v for k, v in self.dict.items()
                 if k not in self._blacklist_fields_submit}
 
-        # profiled_results = RestRequest(ProfilerApi.similar_job) \
-        #     .with_query({'input_file_set': data['input_file_set'],
-        #     'code': data['code']}) \
-        #     .with_credentials() \
-        #     .run()
+        profiled_results = RestRequest(ProfilerApi.similar_job) \
+            .with_query({'input_file_set': data['input_file_set'],
+                         'code': data['code']}) \
+            .with_credentials() \
+            .run()
 
-        # if profiled_results:
-        #     return profiled_results[0]['id']
+        if profiled_results:
+            return profiled_results[0]['id']
 
         # Not profiled before, spawn profile jobs
         r = RestRequest(ProfilerApi.register_template) \
