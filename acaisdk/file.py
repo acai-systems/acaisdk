@@ -111,13 +111,14 @@ class File:
         #         break
         #     time.sleep(1)
         file_ids = r['file_ids']
-        uploaded_file_ids = r['uploaded_file_ids']
+        
 
         # Finish upload files
         r = RestRequest(StorageApi.finish_upload) \
             .with_data({'session_id': session_id, 'paths': file_ids, 'sizes': file_sizes}) \
             .with_credentials() \
             .run()
+        uploaded_file_ids = r['uploaded_file_ids']
 
         # Finish session
         r = RestRequest(StorageApi.finish_file_upload_session) \
