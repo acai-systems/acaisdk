@@ -17,6 +17,8 @@ def wait_for_nodes(expected):
     # Wait for all nodes to join the cluster.
     while True:
         num_nodes = len(ray.nodes())
+        print(num_nodes, expected)
+        sys.stdout.flush()
         if num_nodes < expected:
             print("{} nodes have joined so far, waiting for {} more.".format(
                 num_nodes, expected - num_nodes))
@@ -27,7 +29,7 @@ def wait_for_nodes(expected):
 
 
 def main():
-    wait_for_nodes(4)
+    wait_for_nodes(2)
 
     # Check that objects can be transferred from each node to each other node.
     for i in range(10):
