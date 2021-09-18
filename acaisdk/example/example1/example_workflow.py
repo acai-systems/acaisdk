@@ -63,10 +63,10 @@ job_setting = {
     "v_cpu": "0.2",
     "memory": "256Mi",
     "gpu": "0",
-    "command": "mkdir -p ./my_output/ && (cat Shakespeare/* | python3 wordcount.py ./my_output_prod/)",
+    "command": "mkdir -p ./my_output/ && (cat Shakespeare/* | python3 wordcount.py ./my_output/)",
     "container_image": "pytorch/pytorch",
     'input_file_set': 'shakespeare.works',
-    'output_path': './my_output_prod/',
+    'output_path': './my_output/',
     'code': '/wordcount.zip',
     'description': 'count some words from Shakespeare works',
     'name': 'my_acai_job'
@@ -83,7 +83,7 @@ else:
     print("Job went wrong:", status)
 
 # Take a look at what's in the output folder
-File.list_dir('/my_output_prod')
+File.list_dir('/my_output')
 
 # Download the result to local device
-File.download({'/my_output_prod/wordcount.txt': workspace})
+File.download({'/my_output/wordcount.txt': workspace})
