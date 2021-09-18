@@ -79,8 +79,8 @@ class FileSet:
         
         files_hash_strings = []
         for r in sorted(remote_entities):
-            if r[1] == '@':
-                files_hash_strings.append(meta.Meta.get_file_set_meta(r[2:])['data'][0]['__hash__'])
+            if r[0] == '@':
+                files_hash_strings.append(meta.Meta.get_file_set_meta(r[1:])['data'][0]['__hash__'])
             else:
                 files_hash_strings.append(meta.Meta.get_file_meta(r)['data'][0]['__hash__'])
         fileset_hash = md5_string_list(files_hash_strings)

@@ -124,11 +124,12 @@ class File:
 
 
     @staticmethod
-    def change_status(path: str, storage: str):
+    def change_status(path: str, storage: str) -> None:
         r = RestRequest(StorageApi.change_status) \
-                    .with_data({'path': path, 
-                                'storage_class': storage}) \
-                    .run()
+            .with_data({'path': path, 'location': storage}) \
+            .with_credentials() \
+            .run()
+
         return r
 
     @staticmethod
