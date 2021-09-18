@@ -39,7 +39,7 @@ class File:
     @staticmethod
     def upload(local_to_remote: Union[Dict[str, str],
                                       List[Tuple[str, str]]],
-               results: list = None) -> 'fileset.FilesList':
+               results: list = None, storage: str = 'frequent') -> 'fileset.FilesList':
         """Upload multiple files.
 
         Notice that the method does not deal with conflicting updates. It is
@@ -80,9 +80,12 @@ class File:
         file_hashes = [utils.md5_file(l) for l, _ in l_r_mapping]
 
         # Get URLs
+        print("*" * 20)
+        print(storage)
+        print('*' * 20)
         remote_paths = [r for _, r in l_r_mapping]
         r = RestRequest(StorageApi.start_file_upload_session) \
-            .with_data({'paths': remote_paths, 'hashes': file_hashes}) \
+            .with_data({'storage_class': storage, 'paths': remote_paths, 'hashes': file_hashes}) \
             .with_credentials() \
             .run()
         session_id = r['session_id']
@@ -90,6 +93,7 @@ class File:
         debug(l_r_mapping)
         for i, (local_path, remote_path) in enumerate(l_r_mapping):
             s3_url = r['files'][i]['s3_url']
+            # FileIO(local_path).upload(s3_url, storage)
             FileIO(local_path).upload(s3_url)
             print('Uploaded {} to {}'.format(local_path, remote_path))
 
@@ -117,6 +121,16 @@ class File:
             results += versioned_mapping
 
         return versioned_mapping
+
+
+    @staticmethod
+    def change_status(path: str, storage: str) -> None:
+        r = RestRequest(StorageApi.change_status) \
+            .with_data({'path': path, 'location': storage}) \
+            .with_credentials() \
+            .run()
+
+        return r
 
     @staticmethod
     def download(remote_to_local: Dict[str, str]) -> None:

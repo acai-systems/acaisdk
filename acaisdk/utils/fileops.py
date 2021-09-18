@@ -50,7 +50,7 @@ class FileIO:
             file_object.close()
             os.kill(pid, signal.SIGKILL)
 
-    def upload(self, presigned_link: str):
+    def upload(self, presigned_link: str, storage: str='frequent'):
         def progress_bar(file_obj, file_size):
             prev_pos = 0
             with tqdm(total=file_size,
@@ -71,7 +71,9 @@ class FileIO:
         #         file_object, self.file_size))
         # p.start()
 
+
         headers = {'Content-Type': 'application/binary'}
+
         try:
             r = get_session().put(presigned_link, data=file_object,
                                   headers=headers)

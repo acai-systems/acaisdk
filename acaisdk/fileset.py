@@ -1,6 +1,7 @@
 from acaisdk.services.api_calls import *
 from typing import Iterable, List
 from acaisdk import file
+from acaisdk import meta
 from acaisdk.utils.fileops import FileIO
 
 
@@ -75,9 +76,19 @@ class FileSet:
             _msg = 'Need a list or tuple of remote entities ' \
                    'instead of {}.'.format(type(remote_entities))
             raise AcaiException(_msg)
+        
+        files_hash_strings = []
+        for r in sorted(remote_entities):
+            if r[0] == '@':
+                files_hash_strings.append(meta.Meta.get_file_set_meta(r[1:])['data'][0]['__hash__'])
+            else:
+                files_hash_strings.append(meta.Meta.get_file_meta(r)['data'][0]['__hash__'])
+        fileset_hash = md5_string_list(files_hash_strings)
+
         data = {
             "name": file_set_name,
-            "files": list(remote_entities)
+            "files": list(remote_entities),
+            "hash": fileset_hash
         }
         return RestRequest(StorageApi.create_file_set) \
             .with_data(data) \

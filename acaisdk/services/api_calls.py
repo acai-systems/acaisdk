@@ -65,6 +65,7 @@ class StorageApi(Services):
     list_directory = EnumFactory.GET()
     make_directory = EnumFactory.POST()
     upload_file = EnumFactory.POST()
+    change_status = EnumFactory.POST()
     download_file = EnumFactory.GET()
     download_files = EnumFactory.POST()
     list_file_versions = EnumFactory.GET()
@@ -137,6 +138,12 @@ class AutoMLApi(Services):
     submit_model = EnumFactory.POST()
     get_status = EnumFactory.GET()
 
+class AutoMLApi(Services):
+    tasks = EnumFactory.POST()
+    submit_model = EnumFactory.POST()
+    get_status = EnumFactory.GET()
+
+
 class RestRequest:
     def __init__(self, service: Services):
         self.service = service
@@ -169,7 +176,7 @@ class RestRequest:
 
     def run(self):
         endpoint, port = self.service.endpoint
-        debug('Running request:',
+        debug('Running request form master:',
               endpoint,
               port,
               self.service.service_name,
@@ -194,6 +201,8 @@ class RestRequest:
                                    self.data)
         raise AcaiException('Unknown request type: '
                             '{}'.format(self.service.method))
+
+
     def runCustomPath(self, pathStr):
         endpoint, port = self.service.endpoint
         debug('Running request:',

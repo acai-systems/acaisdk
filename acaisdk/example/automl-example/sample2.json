@@ -1,0 +1,18 @@
+{
+   "dataset": {
+      "path": "squad/"
+   },
+   "input_file_set_id": "squad_demo.works",
+   "output_file_set_id": "squad_demo_output",
+   "type": "CandidateAnswerSelection",
+   "metric": "MAP",
+   "order": "desc",
+   "gpu": 0,
+   "vcpu": 0.2,
+   "memory": "2Gi",
+   "job_limit": 2,
+   "user_token": "00uUq2XXjY2mYZSe0WPHA6R0qpKUXi4s",
+   "token": "00uUq2XXjY2mYZSe0WPHA6R0qpKUXi4s",
+   "user_id": 5559,
+   "description": "acai automl test"
+}

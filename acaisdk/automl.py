@@ -5,8 +5,7 @@ import json
 class AutoML:
     @staticmethod
     def tasks(filename):
-        # data = yaml.load(open(filename, 'rb').read(), Loader=yaml.FullLoader)
-        data = json.loads(open(filename).read())
+        data = yaml.load(open(filename, 'rb').read(), Loader=yaml.FullLoader)
         r = RestRequest(AutoMLApi.tasks) \
                 .with_data(data) \
                 .with_credentials() \

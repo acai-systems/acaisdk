@@ -138,6 +138,8 @@ class Job:
         'registered',
         'submitted',
         'job_status',
+        'nnode',
+        'framework',
     ]
     _required_fields = [
         'name',
@@ -462,6 +464,8 @@ class ProfilingJob(object):
         'all_options',
         'memory_space',
         'cpu_space',
+        'nnode_space',
+        'framework',
         'model_name',
         'model_id',
         'spawned_jobs',

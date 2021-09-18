@@ -24,6 +24,8 @@ def post(server, port, service, path,
                            verify=False)
     if r.status_code != HTTPStatus.OK:
         raise exceptions.RemoteException(r.content)
+    if path == 'change_status':
+        return
     return r.json()
 
 
@@ -34,3 +36,4 @@ def get(server, port, service, path, params: dict):
     if r.status_code != HTTPStatus.OK:
         raise exceptions.RemoteException(r.content)
     return r.json()
+
