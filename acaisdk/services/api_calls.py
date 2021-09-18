@@ -133,6 +133,10 @@ class AutoProvisionerApi(Services):
 class ProvenanceApi(Services):
     register = EnumFactory.POST()
 
+class AutoMLApi(Services):
+    tasks = EnumFactory.POST()
+    submit_model = EnumFactory.POST()
+    get_status = EnumFactory.GET()
 
 class AutoMLApi(Services):
     tasks = EnumFactory.POST()
@@ -197,6 +201,7 @@ class RestRequest:
                                    self.data)
         raise AcaiException('Unknown request type: '
                             '{}'.format(self.service.method))
+
 
     def runCustomPath(self, pathStr):
         endpoint, port = self.service.endpoint

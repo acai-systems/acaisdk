@@ -70,7 +70,8 @@ class FileIO:
         #     target=progress_bar, args=(
         #         file_object, self.file_size))
         # p.start()
-        
+
+
         headers = {'Content-Type': 'application/binary'}
 
         try:
