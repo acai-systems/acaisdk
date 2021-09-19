@@ -1,7 +1,0 @@
-.DS_Store
-.idea
-.ipynb_checkpoints
-__pycache__
-!*.ipynb
-.vscode/
-acaisdk/example/example2/demo/dataset/input/
