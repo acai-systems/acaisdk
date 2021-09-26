@@ -6,6 +6,7 @@ class Project:
     def create_project(project_id: str,
                        admin_token: str,
                        project_admin: str,
+                       csp: str='AWS',
                        budget: float=10) -> dict:
         """This is the starting point of your ACAI journey.
         Project, like its definition in GCP, is a bundle of resources. Users,
@@ -20,6 +21,8 @@ class Project:
             new projects.
         :param project_admin:
             An user name for the project administrator.
+        :param csp:
+            Cloud Service provider that this project will be using
         :return:
             .. code-block::
                 {
@@ -32,12 +35,15 @@ class Project:
         if budget == 10:
             print("Set the budget of Project {%s} to default value: $%.2f" %(project_id, budget))
             print("Update the budget using: set_budget(amount)")
+        
+        print('Cloud service provider: ', csp)
 
 
         return RestRequest(CredentialApi.create_project) \
             .with_data({'project_id': project_id,
                         'budget': budget,
                         'admin_token': admin_token,
+                        'csp': csp,
                         "project_admin_name": project_admin}) \
             .run()
 

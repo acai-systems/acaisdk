@@ -73,6 +73,9 @@ class FileIO:
 
 
         headers = {'Content-Type': 'application/binary'}
+        # azure
+        if 'core.windows.net' in presigned_link:
+            headers['x-ms-blob-type'] = 'BlockBlob'
 
         try:
             r = get_session().put(presigned_link, data=file_object,
@@ -96,7 +99,7 @@ class FileIO:
         r = get_session().get(presigned_link, verify=False, stream=True)
         # r.raise_for_status()
         print(r)
-        if r.status_code == 200:
+        if r.status_code == 200 or r.status_code == 201:
             content_len = int(r.headers['Content-Length'])
 
             with open(local_file_path, 'wb') as f, tqdm(

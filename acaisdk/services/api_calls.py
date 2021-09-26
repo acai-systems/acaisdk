@@ -69,6 +69,7 @@ class StorageApi(Services):
     download_file = EnumFactory.GET()
     download_files = EnumFactory.POST()
     list_file_versions = EnumFactory.GET()
+    finish_upload = EnumFactory.POST()
 
     # File system v2
     start_file_upload_session = EnumFactory.POST()
