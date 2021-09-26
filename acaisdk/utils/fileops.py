@@ -77,6 +77,8 @@ class FileIO:
         if 'core.windows.net' in presigned_link:
             headers['x-ms-blob-type'] = 'BlockBlob'
 
+        if 'storage.googleapis.com' in presigned_link:
+            headers['Content-Type'] = 'application/octet-stream'
         try:
             r = get_session().put(presigned_link, data=file_object,
                                   headers=headers)
