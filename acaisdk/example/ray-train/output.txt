@@ -1,0 +1,8 @@
+{'num_samples': 1000, 'epoch': 1.0, 'batch_count': 250.0, 'train_loss': 2.6077617920508493, 'last_train_loss': 3.605106394388713e-05}
+{'num_samples': 1000, 'epoch': 2.0, 'batch_count': 250.0, 'train_loss': 0.3978749863707053, 'last_train_loss': 1.55565794557333e-05}
+{'num_samples': 1000, 'epoch': 3.0, 'batch_count': 250.0, 'train_loss': 0.17154678975607385, 'last_train_loss': 6.664108695986215e-06}
+{'num_samples': 1000, 'epoch': 4.0, 'batch_count': 250.0, 'train_loss': 0.0739638583583037, 'last_train_loss': 2.9025350158917718e-06}
+{'num_samples': 1000, 'epoch': 5.0, 'batch_count': 250.0, 'train_loss': 0.03189014307299658, 'last_train_loss': 1.2482078091125004e-06}
+{'num_samples': 400, 'batch_count': 100.0, 'val_loss': 0.07893173116891376, 'last_val_loss': 9.725840754981618e-06, 'val_accuracy': 0.0, 'last_val_accuracy': 0.0}
+trained weight:  2.05, bias:  4.51
+success!

@@ -48,9 +48,14 @@ def train(
     print("-- finish model.train()")
 
     print("-- ready to rock to training epochs")
+
+    print("numer of epochs:", numEpochs)
     for epoch in range(numEpochs):
+        print("epoch:", epoch)
         avg_loss = 0.0
+        print("size:", len((data_loader)))
         for batch_num, (feats, labels) in enumerate(data_loader):
+            print(batch_num, feats, labels)
             feats, labels = feats.to(device), labels.to(device)
 
             optimizer.zero_grad()
@@ -62,6 +67,8 @@ def train(
 
             avg_loss += loss.item()
 
+            print("here 1")
+
             # print('train Epoch: {}\tBatch: {}\tLoss: {:.4f}'.format(
             #     epoch + 1, batch_num + 1, loss.item()))
 
@@ -70,10 +77,14 @@ def train(
                                                                       batch_num + 1, avg_loss / 50))
                 avg_loss = 0.0
 
+            print("here 1")
+
             torch.cuda.empty_cache()
             del feats
             del labels
             del loss
+
+            print("here 3")
 
         # TODO: there's some bug here that lead the program to exit with error
         # if task == 'Classification':
@@ -157,12 +168,12 @@ if __name__ == '__main__':
     train_dataset = torchvision.datasets.ImageFolder(
         root=train_foler, transform=torchvision.transforms.ToTensor())
     train_dataloader = torch.utils.data.DataLoader(
-        train_dataset, batch_size=10, shuffle=True, num_workers=8)
+        train_dataset, batch_size=10, shuffle=True, num_workers=1)
 
     dev_dataset = torchvision.datasets.ImageFolder(
         root=dev_foler, transform=torchvision.transforms.ToTensor())
     dev_dataloader = torch.utils.data.DataLoader(
-        dev_dataset, batch_size=10, shuffle=True, num_workers=8)
+        dev_dataset, batch_size=10, shuffle=True, num_workers=1)
     num_classes = len(train_dataset.classes)
     network = Network(num_feats, hidden_sizes, num_classes)
     network.apply(init_weights)
@@ -179,5 +190,5 @@ if __name__ == '__main__':
     network.to(device)
     print("-- ready to rock to train()")
     train(network, train_dataloader, dev_dataloader, numEpochs)
-    print("-- finish train()")
+    print("-- finish train() ***************** ")
     torch.save(network.cpu(), output_folder + "/network.npy")

@@ -46,15 +46,18 @@ if __name__ == '__main__':
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
     args = parser.parse_args()
+    # if args.output_folder:
+    #     output_folder = args.output_folder
     if args.eval_data:
         eval_data = args.eval_data
     if args.model:
         model = args.model
+    
     network = torch.load(model)
     test_dataset = torchvision.datasets.ImageFolder(root=eval_data,
                                                 transform=torchvision.transforms.ToTensor())
     test_dataloader = torch.utils.data.DataLoader(test_dataset, batch_size=10, 
-                                                shuffle=False, num_workers=8)
+                                                shuffle=True, num_workers=1)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     criterion = nn.CrossEntropyLoss()
     eval_loss, eval_acc = test_classify(network, test_dataloader)
