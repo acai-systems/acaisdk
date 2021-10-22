@@ -5,6 +5,8 @@ import multiprocessing
 from tqdm import tqdm
 from acaisdk.utils.rest_utils import get_session
 from acaisdk.utils import utils
+from acaisdk.private_cluster import get_private_cluster
+from urllib.parse import urlparse
 
 
 class FileIO:
@@ -63,6 +65,11 @@ class FileIO:
                     if offset >= file_size:
                         break
 
+        url_parsed = urlparse(presigned_link)
+        if url_parsed.scheme == 'private':
+                private_cluster = get_private_cluster()
+                private_cluster.upload_file(url_parsed.netloc, url_parsed.path, self.file_path)
+                return "uploaded to private cluster"
         file_object = open(self.file_path, 'rb')
 
         # TODO: buggy code
@@ -97,7 +104,12 @@ class FileIO:
     @staticmethod
     def download(presigned_link: str,
                  local_file_path: str):
-
+        url_parsed = urlparse(presigned_link)
+        if url_parsed.scheme == 'private':
+            private_cluster = get_private_cluster()
+            private_cluster.download_file(url_parsed.netloc, url_parsed.path, local_file_path)
+            return "downloaded from private cluster"
+        
         r = get_session().get(presigned_link, verify=False, stream=True)
         # r.raise_for_status()
         print(r)

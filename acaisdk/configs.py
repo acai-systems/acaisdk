@@ -31,7 +31,17 @@ class Configs:
         self.cred_endpoint = \
             conf.get('general', 'credential_endpoint')
         self.cred_endpoint_port = \
-            conf.getint('general', 'credential_endpoint_port')
+            conf.getint('general', 'credential_endpoint_port')   
+        self.private_cred_endpoint = \
+             conf.get('phoebe', 'credential_endpoint')
+        self.private_cred_endpoint_port = \
+            conf.getint('phoebe', 'credential_endpoint_port')   
+        self.private_cluster_endpoint = \
+            conf.get('storage', 'private_cluster_endpoint')
+        self.access_key_id = \
+            conf.get('storage', 'access_key_id')
+        self.secret_access_key = \
+            conf.get('storage', 'secret_access_key')
 
     def update(self, **kwargs):
         self.cred_endpoint = \
