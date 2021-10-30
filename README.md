@@ -40,6 +40,16 @@ jupyter notebook
 
 Then use `example_workflow.ipynb` notebook to run the workflow.
 
+
+## Note on running ACAI on Phoebe Cluster
+
+ACAI SDK is now available on the Phoebe Cluster, to connect to the service on Phoebe, within the Jupyter Notebook, run the following:
+
+```python
+os.environ["CLUSTER"] = 'PHOEBE'
+```
+
+
 ## Documentation
 
 Detailed documentation on the SDK can be found at:
