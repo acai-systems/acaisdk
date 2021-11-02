@@ -188,7 +188,7 @@ class RestRequest:
 
     def run(self):
         endpoint, port = self.service.endpoint
-        debug('Running request form master:',
+        debug('Running request from master:',
               endpoint,
               port,
               self.service.service_name,
