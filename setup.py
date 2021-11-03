@@ -24,7 +24,7 @@ setup(name='acaisdk',
       author='Chang Xu',
       author_email='changx@andrew.cmu.edu',
       license='MIT',
-      packages=find_packages(),
+      packages=find_packages(exclude=('example',)),
       include_package_data=True,
       install_requires=parse_requirements(),
       zip_safe=True)
