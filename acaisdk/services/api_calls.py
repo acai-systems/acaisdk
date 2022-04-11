@@ -6,6 +6,7 @@ from acaisdk.utils.utils import *
 from acaisdk.utils.exceptions import *
 from acaisdk.credentials import get_credentials, has_logged_in
 import json
+import os
 
 E = namedtuple('E', ['id', 'method'])
 
@@ -46,6 +47,16 @@ class Services(Enum):
     def endpoint(self):
         """There is only one endpoint the client talks to."""
         conf = configs.get_configs()
+        cluster = os.environ.get('CLUSTER', None)
+        if cluster == 'PHOEBE':
+            return conf.private_cred_endpoint, conf.private_cred_endpoint_port
+        # running within the pods created by phoebe
+        if os.path.exists('/var/run/secrets/kubernetes.io/serviceaccount/namespace'):
+            with open('/var/run/secrets/kubernetes.io/serviceaccount/namespace','r') as f:
+                namespace=f.read()
+                if namespace == 'default':
+                    return conf.cred_endpoint, conf.cred_endpoint_port
+                return conf.private_cred_endpoint, conf.private_cred_endpoint_port
         return conf.cred_endpoint, conf.cred_endpoint_port
 
     @property
@@ -69,6 +80,7 @@ class StorageApi(Services):
     download_file = EnumFactory.GET()
     download_files = EnumFactory.POST()
     list_file_versions = EnumFactory.GET()
+    finish_upload = EnumFactory.POST()
 
     # File system v2
     start_file_upload_session = EnumFactory.POST()
@@ -134,6 +146,10 @@ class AutoProvisionerApi(Services):
 class ProvenanceApi(Services):
     register = EnumFactory.POST()
 
+class AutoMLApi(Services):
+    tasks = EnumFactory.POST()
+    submit_model = EnumFactory.POST()
+    get_status = EnumFactory.GET()
 
 class AutoMLApi(Services):
     tasks = EnumFactory.POST()
@@ -173,7 +189,7 @@ class RestRequest:
 
     def run(self):
         endpoint, port = self.service.endpoint
-        debug('Running request from dev:',
+        debug('Running request:',
               endpoint,
               port,
               self.service.service_name,
@@ -198,6 +214,7 @@ class RestRequest:
                                    self.data)
         raise AcaiException('Unknown request type: '
                             '{}'.format(self.service.method))
+
 
     def runCustomPath(self, pathStr):
         endpoint, port = self.service.endpoint

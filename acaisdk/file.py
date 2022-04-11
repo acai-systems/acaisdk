@@ -3,6 +3,8 @@ from acaisdk.utils.fileops import FileIO
 from typing import Dict, List, Tuple, Union, NamedTuple
 from acaisdk import fileset
 from acaisdk.utils import utils
+from acaisdk.private_cluster import get_private_cluster
+from urllib.parse import urlparse
 import os
 import glob
 import time
@@ -79,6 +81,9 @@ class File:
         # Get file hashvalues 
         file_hashes = [utils.md5_file(l) for l, _ in l_r_mapping]
 
+        # Get file sizes
+        file_sizes = [os.path.getsize(l) for l, _ in l_r_mapping]
+
         # Get URLs
         print("*" * 20)
         print(storage)
@@ -94,24 +99,36 @@ class File:
         for i, (local_path, remote_path) in enumerate(l_r_mapping):
             s3_url = r['files'][i]['s3_url']
             # FileIO(local_path).upload(s3_url, storage)
+            print(s3_url)
             FileIO(local_path).upload(s3_url)
             print('Uploaded {} to {}'.format(local_path, remote_path))
 
-        while True:
-            r = RestRequest(StorageApi.poll_file_upload_session) \
-                .with_query({'session_id': session_id}) \
-                .with_credentials() \
-                .run()
-            if r['committed']:
-                versioned_remote_paths = r['uploaded_file_ids']
-                break
-            time.sleep(1)
+        # while True:
+        #     r = RestRequest(StorageApi.poll_file_upload_session) \
+        #         .with_query({'session_id': session_id}) \
+        #         .with_credentials() \
+        #         .run()
+        #     if r['committed']:
+        #         versioned_remote_paths = r['uploaded_file_ids']
+        #         break
+        #     time.sleep(1)
+        file_ids = r['file_ids']
+        
+
+        # Finish upload files
+        r = RestRequest(StorageApi.finish_upload) \
+            .with_data({'session_id': session_id, 'paths': file_ids, 'sizes': file_sizes}) \
+            .with_credentials() \
+            .run()
+        uploaded_file_ids = r['uploaded_file_ids']
 
         # Finish session
         r = RestRequest(StorageApi.finish_file_upload_session) \
             .with_data({'session_id': session_id}) \
             .with_credentials() \
             .run()
+
+        versioned_remote_paths = uploaded_file_ids
 
         versioned_mapping = fileset.FilesList(
             [(l, vr) for (l, _), vr in zip(l_r_mapping, versioned_remote_paths)]

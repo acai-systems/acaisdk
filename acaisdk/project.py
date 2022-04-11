@@ -1,11 +1,13 @@
 from acaisdk.services.api_calls import *
 from acaisdk import credentials
+from acaisdk.private_cluster import get_private_cluster
 
 class Project:
     @staticmethod
     def create_project(project_id: str,
                        admin_token: str,
                        project_admin: str,
+                       csp: str='AWS',
                        budget: float=10) -> dict:
         """This is the starting point of your ACAI journey.
         Project, like its definition in GCP, is a bundle of resources. Users,
@@ -20,6 +22,8 @@ class Project:
             new projects.
         :param project_admin:
             An user name for the project administrator.
+        :param csp:
+            Cloud Service provider that this project will be using
         :return:
             .. code-block::
                 {
@@ -32,14 +36,29 @@ class Project:
         if budget == 10:
             print("Set the budget of Project {%s} to default value: $%.2f" %(project_id, budget))
             print("Update the budget using: set_budget(amount)")
+        
+        print('Cloud service provider: ', csp)
 
+        if csp not in ['AWS', 'AZURE', 'GCP', 'PRIVATE']:
+            print('CSP not supported: Current options: AWS, AZURE, GCP, PRIVATE')
+            return
 
-        return RestRequest(CredentialApi.create_project) \
+        resp = RestRequest(CredentialApi.create_project) \
             .with_data({'project_id': project_id,
                         'budget': budget,
                         'admin_token': admin_token,
+                        'csp': csp,
                         "project_admin_name": project_admin}) \
             .run()
+        
+        # cloud service provider is private cluster, create bucket accordingly
+        if csp == 'PRIVATE':
+            print(resp)
+            bucket_name = resp['bucket_name']
+            private_cluster = get_private_cluster()
+            private_cluster.create_buckets(bucket_name)
+        
+        return resp
 
     @staticmethod
     def create_user(project_id: str,

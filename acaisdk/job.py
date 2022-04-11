@@ -20,7 +20,7 @@ class JobStatus(Enum):
     :ivar FINISHED:
     :ivar FAILED:
     :ivar KILLED:
-    :ivar CONTAINER_CRASHED:
+    :ivar CONTAINERCRASHED:
     :ivar UNKNOWN: It seems that the job does not exist
     """
     QUEUEING = auto()
@@ -31,7 +31,7 @@ class JobStatus(Enum):
     FINISHED = auto()
     FAILED = auto()
     KILLED = auto()
-    CONTAINER_CRASHED = auto()
+    CONTAINERCRASHED = auto()
     UNKNOWN = auto()
 
     @staticmethod
