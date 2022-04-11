@@ -136,6 +136,7 @@ class LogServerApi(Services):
 
 class ProfilerApi(Services):
     register_template = EnumFactory.POST()
+    similar_job = EnumFactory.GET()
 
 
 class AutoProvisionerApi(Services):
@@ -188,7 +189,7 @@ class RestRequest:
 
     def run(self):
         endpoint, port = self.service.endpoint
-        debug('Running request from master:',
+        debug('Running request:',
               endpoint,
               port,
               self.service.service_name,
