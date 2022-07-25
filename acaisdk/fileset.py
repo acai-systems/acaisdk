@@ -8,7 +8,6 @@ from acaisdk.utils.fileops import FileIO
 class FilesList(list):
     def as_new_file_set(self, file_set_name):
         """Create a file set for a newly uploaded batch.
-
         Usage can be found at `File.upload` and `File.convert_to_file_mapping`
         """
         return FileSet.create_file_set(file_set_name,
@@ -16,7 +15,6 @@ class FilesList(list):
 
     def upload(self):
         """Upload a FilesList to data lake.
-
         Usage can be found at `File.convert_to_file_mapping`
         """
         return file.File.upload(self)
@@ -27,41 +25,26 @@ class FileSet:
     def create_file_set(file_set_name: str,
                         remote_entities: list) -> dict:
         """Create a file set on a list of remote files or file sets.
-
         Denoting a file is the same as anywhere else. Use "@" prefix to
         denote file sets.
-
         Examples:
-
         1. Create file set from files
-
         .. code-block::
-
             create_file_set("my_new_file_set_name",
                             ["/my_data/test.json", "/my_data/a/b.txt:3"])
-
         2. Create file set from other file sets
-
         .. code-block::
-
             create_file_set("my_new_file_set_name",
                             ["@file_set_a:1", "@file_set_b"])
-
         3. You can also mix file and file sets
-
         .. code-block::
-
             create_file_set("my_new_file_set_name",
                             ["@file_set_a:1",
                              "/my_data/a/b.txt:3",
                              "@file_set_c"]
                             )
-
-
         :return:
-
             .. code-block:: text
-
                 {
                   "id": "HotpotQA:1",
                   "files": [
@@ -77,7 +60,12 @@ class FileSet:
                    'instead of {}.'.format(type(remote_entities))
             raise AcaiException(_msg)
         
-        files_hash_strings = [meta.Meta.get_file_meta(r)['data'][0]['__hash__'] for r in sorted(remote_entities)]
+        files_hash_strings = []
+        for r in sorted(remote_entities):
+            if r[0] == '@':
+                files_hash_strings.append(meta.Meta.get_file_set_meta(r[1:])['data'][0]['__hash__'])
+            else:
+                files_hash_strings.append(meta.Meta.get_file_meta(r)['data'][0]['__hash__'])
         fileset_hash = md5_string_list(files_hash_strings)
 
         data = {
@@ -109,41 +97,30 @@ class FileSet:
                           mount_point: str = None,
                           force: bool = False) -> None:
         """Download a file set to local device.
-
         :param vague_name:
             File set name can be vague (with or without version number). Latest
             version of the file set will be chosen if no version given.
-
         :param mount_point:
             Which local directory to download the file set to. This won't
             actually "mount" any device on your local file system. But the
             behavior will be similar to mounting the root directory in the
             remote file system to the "mount_point" directory.
-
             e.g. For a file set `allen:2` with file
-
             .. code-block:: text
-
                 /allen/1.txt:1
                 /allen/d/2.txt:1
                 /allen/3.txt:3
-
             calling :code:`download_file_set('allen:2', '/local_tmp/')`
             results in a local directory hierarchy of:
-
             .. code-block:: text
-
                 /local_tmp/allen/1.txt
                 /local_tmp/allen/d/2.txt
                 /local_tmp/allen/3.txt
-
             Notice that the SDK won't create the mount_point directory for you,
             but it will create folders inside the mount_point automatically.
-
         :param force:
             If local directory has conflicting file names, choose if
             continue to download.
-
         """
         if not mount_point:
             # Use current directory

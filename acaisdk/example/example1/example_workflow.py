@@ -21,10 +21,10 @@ workspace = os.path.dirname(os.path.realpath('__file__'))  # get current directo
 
 
 # # Make your changes here
-# project_id = "integration_test_dev"
-# root_token = 'EmDlCTBF1ppONSciYVd03M9xkmF6hFqW'
-# project_admin = 'baljit'
-# user = 'baljit'
+#project_id = "integration_test_dev"
+#root_token = 'EmDlCTBF1ppONSciYVd03M9xkmF6hFqW'
+#project_admin = 'baljit'
+#user = 'baljit'
 
 
 # # In[35]:
@@ -32,9 +32,9 @@ workspace = os.path.dirname(os.path.realpath('__file__'))  # get current directo
 
 # # @training
 # # Create project and user
-# r = Project.create_project(project_id, root_token, project_admin)
+#r = Project.create_project(project_id, root_token, project_admin)
 # # Login is done automatically upon user creation
-# r = Project.create_user(project_id, r['project_admin_token'], user)  
+#r = Project.create_user(project_id, r['project_admin_token'], user)  
 
 
 # # In[36]:
@@ -42,7 +42,7 @@ workspace = os.path.dirname(os.path.realpath('__file__'))  # get current directo
 
 # # @evaluation
 # # you can inspect your token in multiple ways
-# print(r['user_token'])
+#print(r['user_token'])
 # print(os.environ['ACAI_TOKEN'])
 # print(credentials.get_credentials())
 
@@ -61,7 +61,7 @@ File.convert_to_file_mapping([input_dir], 'Shakespeare/').files_to_upload.upload
 # Run a job
 job_setting = {
     "v_cpu": "0.2",
-    "memory": "256Mi",
+    "memory": "300Mi",
     "gpu": "0",
     "command": "mkdir -p ./my_output/ && (cat Shakespeare/* | python3 wordcount.py ./my_output/)",
     "container_image": "pytorch/pytorch",

@@ -39,6 +39,7 @@ class Services(Enum):
             ProfilerApi: 'profiler',
             AutoProvisionerApi: 'auto_provisioner',
             LogServerApi: 'log_server',
+            AutoMLApi: 'automl'
         }[type(self)]
 
     @property
@@ -131,7 +132,11 @@ class AutoProvisionerApi(Services):
 class ProvenanceApi(Services):
     register = EnumFactory.POST()
 
-
+class AutoMLApi(Services):
+    tasks = EnumFactory.POST()
+    submit_model = EnumFactory.POST()
+    get_status = EnumFactory.GET()
+    
 class RestRequest:
     def __init__(self, service: Services):
         self.service = service
