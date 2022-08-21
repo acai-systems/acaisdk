@@ -28,12 +28,9 @@ jobs:
     - name: Fourth ls
       run: |
         ls /home/runner/work/acaisdk/acaisdk/acaisdk
-    - name: copy file
-      uses: canastro/copy-file-action@master
-      with:
-        source: "/home/runner/work/acaisdk/acaisdk/acaisdk/configs-local.ini"
-        target: "/home/runner/work/acaisdk/acaisdk/acaisdk/configs.ini"
-
+    - name: Copy configs
+      run: |
+        cp /home/runner/work/acaisdk/acaisdk/acaisdk/configs-local.ini /home/runner/work/acaisdk/acaisdk/acaisdk/configs.ini 
     
     - name: Archive Release
       uses: thedoctor0/zip-release@main
