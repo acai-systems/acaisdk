@@ -19,8 +19,8 @@ jobs:
     - name: copy file
       uses: canastro/copy-file-action@master
       with:
-        source: "acaisdk/acaisdk/configs-local.ini"
-        target: "acaisdk/acaisdk/configs.ini"
+        source: "/home/runner/work/acaisdk/acaisdk/configs-local.ini"
+        target: "/home/runner/work/acaisdk/acaisdk/configs.ini"
 
     
     - name: Archive Release
