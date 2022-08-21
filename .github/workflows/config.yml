@@ -31,16 +31,17 @@ jobs:
     - name: Copy configs
       run: |
         cp /home/runner/work/acaisdk/acaisdk/acaisdk/configs-local.ini /home/runner/work/acaisdk/acaisdk/acaisdk/configs.ini 
-    
-    - name: Archive Release
-      uses: thedoctor0/zip-release@main
+        
+    - name: Generate release tag
+      uses: amitsingh-007/next-release-tag@v1.0.0
       with:
-        type: 'zip'
-        filename: 'release.zip'
-        exclusions: '*.git* /*node_modules/* .*example*'
-
-    - name: Upload Release
-      uses: ncipollo/release-action@v1
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        
+        
+    - name: Create Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        artifacts: "acasdk.zip"
-        token: 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
+        tag_name: ${{ env.release_tag }}
+        release_name: Release-${{ env.release_tag }}
