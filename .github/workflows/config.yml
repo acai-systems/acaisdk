@@ -16,6 +16,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
+    - name: First ls
+      run: |
+        ls
+    - name: Second ls
+      run: |
+        ls /home/runner/work/acaisdk
+    - name: Third ls
+      run: |
+        ls /home/runner/work/acaisdk/acaisdk
     - name: copy file
       uses: canastro/copy-file-action@master
       with:
