@@ -16,32 +16,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - name: First ls
-      run: |
-        ls
-    - name: Second ls
-      run: |
-        ls /home/runner/work/acaisdk
-    - name: Third ls
-      run: |
-        ls /home/runner/work/acaisdk/acaisdk
-    - name: Fourth ls
-      run: |
-        ls /home/runner/work/acaisdk/acaisdk/acaisdk
     - name: Copy configs
       run: |
         cp /home/runner/work/acaisdk/acaisdk/acaisdk/configs-local.ini /home/runner/work/acaisdk/acaisdk/acaisdk/configs.ini 
         
+    - name: Archive Release
+      uses: thedoctor0/zip-release@main
+      with:
+        type: 'zip'
+        filename: 'release.zip'
+        exclusions: '*.git* /*node_modules/* *example* *docs*'
     - name: Generate release tag
       uses: amitsingh-007/next-release-tag@v1.0.0
       with:
-        github_token: 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
+        github_token: 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
         
-        
-    - name: Create Release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: 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
+    - name: Upload binaries to release
+      uses: svenstaro/upload-release-action@v2
       with:
-        tag_name: ${{ env.release_tag }}
-        release_name: Release-${{ env.release_tag }}
+        repo_token: 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
+        file: release.zip
+        asset_name: acai-sdk.zip
+        release_name: acai-sdk.zip
+        tag: ${{ env.release_tag }}
