@@ -29,12 +29,12 @@ jobs:
     - name: Generate release tag
       uses: amitsingh-007/next-release-tag@v1.0.0
       with:
-        github_token: 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
+        github_token: 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
         
     - name: Upload binaries to release
       uses: svenstaro/upload-release-action@v2
       with:
-        repo_token: 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
+        repo_token: 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
         file: release.zip
         asset_name: acai-sdk.zip
         release_name: acai-sdk.zip
