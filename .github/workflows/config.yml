@@ -28,10 +28,17 @@ jobs:
       with:
         type: 'zip'
         filename: 'release.zip'
-        exclusions: '*.git* /*node_modules/* .*example*'
-
-    - name: Upload Release
-      uses: ncipollo/release-action@v1
+        exclusions: '*.git* /*node_modules/* *example* *docs*'
+    - name: Generate release tag
+      uses: amitsingh-007/next-release-tag@v1.0.0
       with:
-        artifacts: "acasdk.zip"
-        token: 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
+        github_token: ${{ secrets.ACCESS_TOKEN }}
+
+    - name: Upload binaries to release
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.ACCESS_TOKEN }}
+        file: release.zip
+        asset_name: acai-sdk.zip
+        release_name: acai-sdk.zip
+        tag: ${{ env.release_tag }}
