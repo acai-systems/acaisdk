@@ -1,0 +1,42 @@
+name: Release ACAI SDK
+
+on:
+  pull_request:
+    branches:
+      - dev
+  push:
+    branches:
+      - main
+
+
+jobs:
+  archive-release:
+  #timeout-minutes: 10 # timeout for the job
+    name: Archive package and release
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Copy configs
+      run: |
+        cp /home/runner/work/acaisdk/acaisdk/acaisdk/configs-local.ini /home/runner/work/acaisdk/acaisdk/acaisdk/configs.ini 
+        
+    - name: Archive Release
+      uses: thedoctor0/zip-release@main
+      with:
+        type: 'zip'
+        filename: 'release.zip'
+        exclusions: '*.git* /*node_modules/* *example* *docs*'
+    - name: Generate release tag
+      uses: amitsingh-007/next-release-tag@v1.0.0
+      with:
+        github_token: ${{ secrets.ACCESS_TOKEN }}
+
+        
+    - name: Upload binaries to release
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.ACCESS_TOKEN }}
+        file: release.zip
+        asset_name: acai-sdk.zip
+        release_name: acai-sdk.zip
+        tag: ${{ env.release_tag }}
