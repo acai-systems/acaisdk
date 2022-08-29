@@ -16,13 +16,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - name: copy file
-      uses: canastro/copy-file-action@master
-      with:
-        source: "/home/runner/work/acaisdk/acaisdk/configs-local.ini"
-        target: "/home/runner/work/acaisdk/acaisdk/configs.ini"
-
-    
+    - name: Copy configs
+      run: |
+        cp /home/runner/work/acaisdk/acaisdk/acaisdk/configs-local.ini /home/runner/work/acaisdk/acaisdk/acaisdk/configs.ini 
+        
     - name: Archive Release
       uses: thedoctor0/zip-release@main
       with:
@@ -34,6 +31,7 @@ jobs:
       with:
         github_token: ${{ secrets.ACCESS_TOKEN }}
 
+        
     - name: Upload binaries to release
       uses: svenstaro/upload-release-action@v2
       with:
