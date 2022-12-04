@@ -20,7 +20,7 @@ def post(server, port, service, path,
          params: dict, data: dict, file=None):
     r = get_session().post('http://{}:{}/{}/{}'
                            .format(server, port, service, path),
-                           params=params,
+                           data=params,
                            json=data,
                            verify=False)
     if r.status_code != HTTPStatus.OK:
@@ -44,7 +44,7 @@ def async_post(server, port, service, path,
 
     r = session.post('http://{}:{}/{}/{}'
                            .format(server, port, service, path),
-                           params=params,
+                           data=params,
                            json=data,
                            verify=False)
     return r

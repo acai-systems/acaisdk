@@ -1,3 +1,5 @@
+from acaisdk.services.api_calls import *
+
 class SparkTuner:
     def __init__(self, jar_path, data_path, cost_per_hour, main_class, job_name, output_path):
         self.jar_path = jar_path
@@ -23,24 +25,27 @@ class SparkTuner:
 
     # Eg - curl localhost:8080/accept/job -d jar=gs://cmu-acai-spark-input/pageRank/twitter-etl.jar -d dataPath=gs://cmu-acai-spark-input/twitter_cleaned.parquet -d costPerHour=1 -d mainClass=Twitter -d jobName=twitter -d outputPath=gs://cmu-acai-spark-input/twitterOutput
     def create_job(self):
-        RestRequest(SparkTunerAcceptApi.job) \
-            .with_query(self.construct_params(True)) \
+        r = RestRequest(SparkTunerAcceptApi.job) \
+            .with_data(self.construct_params(True)) \
             .with_credentials() \
             .run()
+
+        return r
 
     # Eg - curl localhost:8080/cluster/tunejob -d jobName=twitter
     def tune_job(self):
-        RestRequest(SparkTunerTuneApi.tunejob) \
-            .with_query(self.construct_params(False)) \
+        r = RestRequest(SparkTunerTuneApi.tunejob) \
+            .with_data(self.construct_params(False)) \
             .with_credentials() \
             .run()
 
-    # Eg - curl localhost:8080/cluster/getstatus -d jobName=twitter
+        print('Job has been submitted. Use get_job_status() to get the status')
+
+    # Eg - curl localhost:8080/accept/getstatus -d jobName=twitter
     def get_job_status(self):
         r = RestRequest(SparkTunerAcceptApi.getstatus) \
-            .with_query(self.construct_params(False)) \
+            .with_data(self.construct_params(False)) \
             .with_credentials() \
             .run()
             
-        # TODO: Parse response once constructed in spark-tuner-api
-        print(r)
+        return r

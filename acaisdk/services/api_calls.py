@@ -165,7 +165,7 @@ class AutoMLApi(Services):
 
 class SparkTunerAcceptApi(Services):
     job = EnumFactory.POST()
-    getstatus = EnumFactory.GET()
+    getstatus = EnumFactory.POST()
 
 class SparkTunerTuneApi(Services):
     tunejob = EnumFactory.ASYNC_POST()
