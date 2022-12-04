@@ -2,6 +2,7 @@ import urllib3
 import requests
 from http import HTTPStatus
 from acaisdk.utils import exceptions
+from requests_futures.sessions import FuturesSession
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -37,3 +38,13 @@ def get(server, port, service, path, params: dict):
         raise exceptions.RemoteException(r.content)
     return r.json()
 
+def async_post(server, port, service, path,
+         params: dict, data: dict, file=None):
+    session = FuturesSession()
+
+    r = session.post('http://{}:{}/{}/{}'
+                           .format(server, port, service, path),
+                           params=params,
+                           json=data,
+                           verify=False)
+    return r

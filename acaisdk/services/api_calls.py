@@ -14,6 +14,7 @@ E = namedtuple('E', ['id', 'method'])
 class RestMethods(Enum):
     get = auto()
     post = auto()
+    async_post = auto()
 
 
 class EnumFactory(Enum):
@@ -24,6 +25,10 @@ class EnumFactory(Enum):
     @classmethod
     def POST(cls):
         return E(auto(), RestMethods.post)
+
+    @classmethod
+    def ASYNC_POST(cls):
+        return E(auto(), RestMethods.async_post)
 
 
 class Services(Enum):
@@ -40,7 +45,9 @@ class Services(Enum):
             ProfilerApi: 'profiler',
             AutoProvisionerApi: 'auto_provisioner',
             LogServerApi: 'log_server',
-            AutoMLApi: 'automl'
+            AutoMLApi: 'automl',
+            SparkTunerAcceptApi: 'accept',
+            SparkTunerTuneApi: 'cluster'
         }[type(self)]
 
     @property
@@ -156,6 +163,12 @@ class AutoMLApi(Services):
     submit_model = EnumFactory.POST()
     get_status = EnumFactory.GET()
 
+class SparkTunerAcceptApi(Services):
+    job = EnumFactory.POST()
+    getstatus = EnumFactory.GET()
+
+class SparkTunerTuneApi(Services):
+    tunejob = EnumFactory.ASYNC_POST()
 
 class RestRequest:
     def __init__(self, service: Services):
@@ -207,6 +220,15 @@ class RestRequest:
             self.data.update(self.credentials)
             debug('POST data', json.dumps(self.data))
             return rest_utils.post(endpoint,
+                                   port,
+                                   self.service.service_name,
+                                   self.service.name,
+                                   self.query,
+                                   self.data)
+        elif self.service.method == RestMethods.async_post:
+            self.data.update(self.credentials)
+            debug('ASYNC POST data', json.dumps(self.data))
+            return rest_utils.async_post(endpoint,
                                    port,
                                    self.service.service_name,
                                    self.service.name,
