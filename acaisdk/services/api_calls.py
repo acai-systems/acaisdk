@@ -219,6 +219,9 @@ class RestRequest:
         elif self.service.method == RestMethods.post:
             self.data.update(self.credentials)
             debug('POST data', json.dumps(self.data))
+            print("----------- printing post data -------------")
+            print(endpoint)
+            print(port)
             return rest_utils.post(endpoint,
                                    port,
                                    self.service.service_name,
