@@ -382,7 +382,7 @@ class Job:
             if status in (JobStatus.FINISHED,
                           JobStatus.FAILED,
                           JobStatus.KILLED,
-                          JobStatus.CONTAINER_CRASHED,
+                          JobStatus.CONTAINERCRASHED,
                           JobStatus.UNKNOWN):
                 break
             debug('Current status: {}'.format(status))
