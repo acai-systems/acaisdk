@@ -9,6 +9,7 @@ from torch.autograd import Variable
 from torch import optim
 import sys
 output_dir = sys.argv[1]
+epoch_num = sys.argv[2]
 fp = open(output_dir + "./loss.txt", "w")
 
 class CNN(nn.Module):
@@ -38,28 +39,29 @@ class CNN(nn.Module):
         output = self.out(x)
         return output, x    # return x for visualization
     
-def train(num_epochs, cnn, loaders):
+def train(num_epochs, cnn, train_loader):
     
     # Train the model
-    total_step = len(loaders['train'])
-        
+    cnn.train()
+    total_step = len(train_loader)
     for epoch in range(num_epochs):
-        for i, (images, labels) in enumerate(loaders['train']):
-            
-            b_x = Variable(images)   # batch x
-            b_y = Variable(labels)   # batch y
+        for i, (images, labels) in enumerate(train_loader):
+            # Train based on batches
+            b_x = Variable(images) 
+            b_y = Variable(labels)  
             output = cnn(b_x)[0]               
             loss = loss_func(output, b_y)
-            # clear gradients for this training step   
             optimizer.zero_grad()           
-            # backpropagation, compute gradients 
             loss.backward()    
-            # apply gradients             
-            optimizer.step()           
-            if (i+1) % 100 == 0:
+            optimizer.step()        
+
+            if (i+1) % 100 == 0:                
+                print('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}\n' 
+                       .format(epoch + 1, num_epochs, i + 1, total_step, loss.item()))
                 fp.write('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}\n' 
                        .format(epoch + 1, num_epochs, i + 1, total_step, loss.item()))
             pass
+
 
 train_data = datasets.MNIST(
     root = 'data',
@@ -74,20 +76,13 @@ test_data = datasets.MNIST(
 )
 
 from torch.utils.data import DataLoader
-loaders = {
-    'train' : torch.utils.data.DataLoader(train_data, 
+train_loader = torch.utils.data.DataLoader(train_data, 
                                           batch_size=100, 
                                           shuffle=True),
     
-    'test'  : torch.utils.data.DataLoader(test_data, 
-                                          batch_size=100, 
-                                          shuffle=True),
-}
 
 cnn = CNN()
 loss_func = nn.CrossEntropyLoss()   
 optimizer = optim.Adam(cnn.parameters(), lr = 0.01)   
 
 num_epochs = 10
-
-train(num_epochs, cnn, loaders)
