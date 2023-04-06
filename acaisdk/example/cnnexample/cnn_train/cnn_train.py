@@ -9,9 +9,7 @@ from torch.autograd import Variable
 from torch import optim
 import sys
 output_dir = sys.argv[1]
-fp = open(output_dir + "/loss.txt", "w")
-import time 
-t1 = time.time()
+fp = open(output_dir + "./loss.txt", "w")
 
 class CNN(nn.Module):
     def __init__(self):
@@ -91,6 +89,5 @@ loss_func = nn.CrossEntropyLoss()
 optimizer = optim.Adam(cnn.parameters(), lr = 0.01)   
 
 num_epochs = 10
+
 train(num_epochs, cnn, loaders)
-t2 = time.time()
-print("time run is :", t2 - t1)
