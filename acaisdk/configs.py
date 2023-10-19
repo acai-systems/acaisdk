@@ -33,7 +33,10 @@ class Configs:
         conf = configparser.ConfigParser()
         conf.read(config_path)
 
+
         print(conf, flush=True)
+        print("actual contents", flush=True)
+        print(open(config_path, 'r').read(), flush=True)
 
         self.cred_endpoint = \
             conf.get('general', 'credential_endpoint')
