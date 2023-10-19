@@ -24,9 +24,16 @@ class Configs:
         if not config_path:
             config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                        CONFIG_FILENAME)
-
+        
+        print(config_path, flush=True)
+        print(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                       CONFIG_FILENAME), flush=True)
+        print("current working directory", flush=True)
+        print(os.getcwd(), flush=True)
         conf = configparser.ConfigParser()
         conf.read(config_path)
+
+        print(conf, flush=True)
 
         self.cred_endpoint = \
             conf.get('general', 'credential_endpoint')
