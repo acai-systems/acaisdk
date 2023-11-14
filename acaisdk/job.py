@@ -140,6 +140,8 @@ class Job:
         'job_status',
         'nnode',
         'framework',
+        'adaptdl_status',
+        'model_name'
     ]
     _required_fields = [
         'name',
@@ -204,6 +206,7 @@ class Job:
 
             data = {k: v for k, v in self.dict.items()
                     if k not in self._blacklist_fields_submit}
+            print(data)
 
             r = RestRequest(JobRegistryApi.new_job) \
                 .with_data(data) \
@@ -556,7 +559,6 @@ class AutoProvisioner(object):
         'max_cost',
         'optimize',
         'job',
-
         'submitted',
         'expected_time',
         'expected_cost'  # TODO
